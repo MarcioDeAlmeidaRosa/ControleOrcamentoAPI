@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2016
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControleOrcamentoAPI", "ControleOrcamentoAPI\ControleOrcamentoAPI.csproj", "{0A3EA226-1F3D-4AF0-97A3-D6B11101615B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControleOrcamentoAPI.Tests", "ControleOrcamentoAPI.Tests\ControleOrcamentoAPI.Tests.csproj", "{A0D8C221-7421-403C-BCB2-D0BE6BD91DCC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0A3EA226-1F3D-4AF0-97A3-D6B11101615B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A3EA226-1F3D-4AF0-97A3-D6B11101615B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A3EA226-1F3D-4AF0-97A3-D6B11101615B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A3EA226-1F3D-4AF0-97A3-D6B11101615B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0D8C221-7421-403C-BCB2-D0BE6BD91DCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0D8C221-7421-403C-BCB2-D0BE6BD91DCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0D8C221-7421-403C-BCB2-D0BE6BD91DCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0D8C221-7421-403C-BCB2-D0BE6BD91DCC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {971EAD2E-33E9-42BA-855A-4075D74ACC59}
+	EndGlobalSection
+EndGlobal

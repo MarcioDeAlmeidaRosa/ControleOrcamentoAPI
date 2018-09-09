@@ -44,8 +44,10 @@
     <Compile Include="Agencia.cs" />
     <Compile Include="Banco.cs" />
     <Compile Include="ContaCorrente.cs" />
+    <Compile Include="Usuario.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UsuarioAutenticado.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

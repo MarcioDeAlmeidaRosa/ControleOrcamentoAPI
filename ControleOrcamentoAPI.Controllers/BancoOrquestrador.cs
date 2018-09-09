@@ -4,7 +4,7 @@ using ControleOrcamentoAPI.Models;
 
 namespace ControleOrcamentoAPI.Orquestrador
 {
-    public class BancoOrquestrador : Orquestrador<Banco>
+    public class BancoOrquestrador : Orquestrador, IOrquestrador<Banco>
     {
         private static BancoDAO _dao;
 
@@ -13,27 +13,27 @@ namespace ControleOrcamentoAPI.Orquestrador
             _dao = new BancoDAO();
         }
 
-        public override Banco Atualizar(Banco entidade)
+        public Banco Atualizar(Banco entidade, UsuarioAutenticado token)
         {
             return _dao.Atualizar(entidade);
         }
 
-        public override Banco BuscarPorID(long id)
+        public Banco BuscarPorID(long id, UsuarioAutenticado token)
         {
             return _dao.BuscarPorID(id);
         }
 
-        public override Banco Criar(Banco entidade)
+        public Banco Criar(Banco entidade, UsuarioAutenticado token)
         {
             return _dao.Criar(entidade);
         }
 
-        public override void Deletar(Banco entidade)
+        public void Deletar(Banco entidade, UsuarioAutenticado token)
         {
             _dao.Deletar(entidade);
         }
 
-        public override IList<Banco> ListarPorEntidade(Banco entidade)
+        public IList<Banco> ListarPorEntidade(Banco entidade, UsuarioAutenticado token)
         {
             return _dao.ListarPorEntidade(entidade);
         }

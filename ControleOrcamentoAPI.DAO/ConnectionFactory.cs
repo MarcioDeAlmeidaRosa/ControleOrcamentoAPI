@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Data;
 using System.Data.SqlClient;
+using System.Collections.Generic;
 
 namespace ControleOrcamentoAPI.DAO
 {
@@ -9,6 +11,7 @@ namespace ControleOrcamentoAPI.DAO
         private static IDbConnection _cnn;
 
         private bool _manterConexao = false;
+        private IList<IDataParameter> parametros = new List<IDataParameter>();
 
         public ConnectionFactory(bool manterConexao = false)
         {
@@ -26,15 +29,27 @@ namespace ControleOrcamentoAPI.DAO
             return _cnn;
         }
 
-        #region ObterParametro
-        internal IDataParameter ObterParametro(string nome, object value)
+        private void LimparParametros()
         {
-            return ObterParametro(nome, value, SqlDbType.Text);
+            parametros.Clear();
         }
 
-        internal IDataParameter ObterParametro(string nome, object value, SqlDbType type = SqlDbType.Text, int tamanho = 99999, ParameterDirection direcao = ParameterDirection.Input, bool nulavel = true)
+        #region AdicionarParametro
+        internal void AdicionarParametro(string nome, object valor)
         {
-            return new SqlParameter(nome, value);
+            parametros.Add(ObterParametro(nome, valor));
+        }
+        #endregion
+
+        #region ObterParametro
+        internal IDataParameter ObterParametro(string nome, object valor)
+        {
+            return ObterParametro(nome, valor, SqlDbType.Text);
+        }
+
+        internal IDataParameter ObterParametro(string nome, object valor, SqlDbType type = SqlDbType.Text, int tamanho = 99999, ParameterDirection direcao = ParameterDirection.Input, bool nulavel = true)
+        {
+            return new SqlParameter(nome, valor);
         }
         #endregion
 
@@ -44,14 +59,12 @@ namespace ControleOrcamentoAPI.DAO
             return ExecutaComando(sql, null);
         }
 
-        internal int ExecutaComando(string sql, IDataParameter[] parameters)
-        {
-            return ExecutaComando(sql, parameters);
-        }
-
-        internal int ExecutaComando(string sql, IDataParameter[] parameters, IDbTransaction transaction)
+        internal int ExecutaComando(string sql, IDbTransaction transaction)
         {
             var cmd = new SqlCommand(sql, (SqlConnection)_cnn, (SqlTransaction)transaction);
+            if ((parametros != null) && (parametros.Count > 0))
+                cmd.Parameters.AddRange(parametros.ToArray());
+            LimparParametros();
             _cnn.Open();
             var qtd = cmd.ExecuteNonQuery();
             if (!_manterConexao) _cnn.Close();
@@ -65,16 +78,12 @@ namespace ControleOrcamentoAPI.DAO
             return ObterDados(sql, null);
         }
 
-        internal DataTable ObterDados(string sql, IDataParameter[] parameters)
-        {
-            return ObterDados(sql, parameters, null);
-        }
-
-        internal DataTable ObterDados(string sql, IDataParameter[] parameters, IDbTransaction transaction)
+        internal DataTable ObterDados(string sql, IDbTransaction transaction)
         {
             var cmd = new SqlCommand(sql, (SqlConnection)_cnn, (SqlTransaction)transaction);
-            if ((parameters != null) && (parameters.Length > 0))
-                cmd.Parameters.AddRange(parameters);
+            if ((parametros != null) && (parametros.Count > 0))
+                cmd.Parameters.AddRange(parametros.ToArray());
+            LimparParametros();
             _cnn.Open();
             SqlDataAdapter da = new SqlDataAdapter();
             DataSet ds = new DataSet();

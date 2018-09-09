@@ -41,9 +41,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AuthOrquestrador.cs" />
     <Compile Include="BancoOrquestrador.cs" />
+    <Compile Include="IOrquestrador.cs" />
     <Compile Include="Orquestrador.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UsuarioOrquestrador.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ControleOrcamentoAPI.DAO\ControleOrcamentoAPI.DAO.csproj">

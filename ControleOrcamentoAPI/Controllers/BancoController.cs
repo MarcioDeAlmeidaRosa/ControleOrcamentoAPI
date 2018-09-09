@@ -21,7 +21,7 @@ namespace ControleOrcamentoAPI.Controllers
         {
             try
             {
-                return Request.CreateResponse(HttpStatusCode.OK, _orquestrador.BuscarPorID(id));
+                return Request.CreateResponse(HttpStatusCode.OK, _orquestrador.BuscarPorID(id, Token));
             }
             catch (Exception ex)
             {
@@ -33,7 +33,7 @@ namespace ControleOrcamentoAPI.Controllers
         {
             try
             {
-                return Request.CreateResponse(HttpStatusCode.OK, _orquestrador.ListarPorEntidade(banco));
+                return Request.CreateResponse(HttpStatusCode.OK, _orquestrador.ListarPorEntidade(banco, Token));
             }
             catch (Exception ex)
             {

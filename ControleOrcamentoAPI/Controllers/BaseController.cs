@@ -2,12 +2,15 @@
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using ControleOrcamentoAPI.Models;
 using ControleOrcamentoAPI.Exceptions;
 
 namespace ControleOrcamentoAPI.Controllers
 {
     public abstract class BaseController : ApiController
     {
+        protected UsuarioAutenticado Token { get; }
+
         protected HttpResponseMessage InternalErro(Exception exception)
         {
             HttpError erro = null;

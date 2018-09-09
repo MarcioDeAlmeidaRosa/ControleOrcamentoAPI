@@ -8,19 +8,13 @@ using ControleOrcamentoAPI.Orquestrador;
 namespace ControleOrcamentoAPI.Controllers
 {
     [RoutePrefix("api/banco")]
-    public class BancoController : ApiController
+    public class BancoController : BaseController
     {
         private static BancoOrquestrador _orquestrador;
 
         static BancoController()
         {
             _orquestrador = new BancoOrquestrador();
-        }
-
-        private HttpResponseMessage InternalErro(Exception exception)
-        {
-            HttpError erro = new HttpError("Erro interno do servidor");
-            return Request.CreateResponse(HttpStatusCode.InternalServerError, erro);
         }
 
         public HttpResponseMessage Get(long id)

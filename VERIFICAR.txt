@@ -3,3 +3,7 @@ https://pt.stackoverflow.com/questions/228220/o-que-s%C3%A3o-path-parameters-em-
 
 definindo tipos e valores mínimos na rota
 https://docs.microsoft.com/pt-br/aspnet/web-api/overview/web-api-routing-and-actions/attribute-routing-in-web-api-2
+
+
+CONEXÃO COM SQL SERVER
+//https://www.devmedia.com.br/acesso-a-banco-de-dados-em-csharp-nivel-basico-parte-1/21695

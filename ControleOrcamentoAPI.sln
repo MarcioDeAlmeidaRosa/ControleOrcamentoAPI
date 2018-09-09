@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControleOrcamentoAPI", "Con
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControleOrcamentoAPI.Tests", "ControleOrcamentoAPI.Tests\ControleOrcamentoAPI.Tests.csproj", "{A0D8C221-7421-403C-BCB2-D0BE6BD91DCC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControleOrcamentoAPI.Models", "ControleOrcamentoAPI.Model\ControleOrcamentoAPI.Models.csproj", "{D7F3C038-D44B-43EE-B8F1-47FF9EF53B99}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{A0D8C221-7421-403C-BCB2-D0BE6BD91DCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0D8C221-7421-403C-BCB2-D0BE6BD91DCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0D8C221-7421-403C-BCB2-D0BE6BD91DCC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7F3C038-D44B-43EE-B8F1-47FF9EF53B99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7F3C038-D44B-43EE-B8F1-47FF9EF53B99}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7F3C038-D44B-43EE-B8F1-47FF9EF53B99}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7F3C038-D44B-43EE-B8F1-47FF9EF53B99}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -100,9 +100,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
     <Folder Include="Controllers\" />
-    <Folder Include="Models\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ControleOrcamentoAPI.Model\ControleOrcamentoAPI.Models.csproj">
+      <Project>{d7f3c038-d44b-43ee-b8f1-47ff9ef53b99}</Project>
+      <Name>ControleOrcamentoAPI.Models</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

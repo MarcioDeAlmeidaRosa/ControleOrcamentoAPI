@@ -1,6 +1,6 @@
 ﻿namespace ControleOrcamentoAPI.Models
 {
-    public class Agencia
+    public class Agencia: Entity
     {
         public Banco Banco { get; set; }
 

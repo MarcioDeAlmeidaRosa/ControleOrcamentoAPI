@@ -5,9 +5,13 @@ VisualStudioVersion = 15.0.28010.2016
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControleOrcamentoAPI", "ControleOrcamentoAPI\ControleOrcamentoAPI.csproj", "{0A3EA226-1F3D-4AF0-97A3-D6B11101615B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControleOrcamentoAPI.Tests", "ControleOrcamentoAPI.Tests\ControleOrcamentoAPI.Tests.csproj", "{A0D8C221-7421-403C-BCB2-D0BE6BD91DCC}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControleOrcamentoAPI.Models", "ControleOrcamentoAPI.Model\ControleOrcamentoAPI.Models.csproj", "{D7F3C038-D44B-43EE-B8F1-47FF9EF53B99}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControleOrcamentoAPI.Orquestrador", "ControleOrcamentoAPI.Controllers\ControleOrcamentoAPI.Orquestrador.csproj", "{68D4672F-27C6-4E2E-A242-886C21511D6F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControleOrcamentoAPI.DAO", "ControleOrcamentoAPI.DAO\ControleOrcamentoAPI.DAO.csproj", "{DEBD6685-ACCE-4855-AB57-FD4BC238C751}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControleOrcamentoAPI.Tests", "ControleOrcamentoAPI.Tests\ControleOrcamentoAPI.Tests.csproj", "{A0D8C221-7421-403C-BCB2-D0BE6BD91DCC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,14 +23,22 @@ Global
 		{0A3EA226-1F3D-4AF0-97A3-D6B11101615B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A3EA226-1F3D-4AF0-97A3-D6B11101615B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A3EA226-1F3D-4AF0-97A3-D6B11101615B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A0D8C221-7421-403C-BCB2-D0BE6BD91DCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A0D8C221-7421-403C-BCB2-D0BE6BD91DCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A0D8C221-7421-403C-BCB2-D0BE6BD91DCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A0D8C221-7421-403C-BCB2-D0BE6BD91DCC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D7F3C038-D44B-43EE-B8F1-47FF9EF53B99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D7F3C038-D44B-43EE-B8F1-47FF9EF53B99}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D7F3C038-D44B-43EE-B8F1-47FF9EF53B99}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D7F3C038-D44B-43EE-B8F1-47FF9EF53B99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68D4672F-27C6-4E2E-A242-886C21511D6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68D4672F-27C6-4E2E-A242-886C21511D6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68D4672F-27C6-4E2E-A242-886C21511D6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68D4672F-27C6-4E2E-A242-886C21511D6F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DEBD6685-ACCE-4855-AB57-FD4BC238C751}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEBD6685-ACCE-4855-AB57-FD4BC238C751}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEBD6685-ACCE-4855-AB57-FD4BC238C751}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEBD6685-ACCE-4855-AB57-FD4BC238C751}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0D8C221-7421-403C-BCB2-D0BE6BD91DCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0D8C221-7421-403C-BCB2-D0BE6BD91DCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0D8C221-7421-403C-BCB2-D0BE6BD91DCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0D8C221-7421-403C-BCB2-D0BE6BD91DCC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

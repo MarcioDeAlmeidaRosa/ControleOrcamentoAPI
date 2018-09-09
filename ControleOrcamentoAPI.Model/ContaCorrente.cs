@@ -1,6 +1,6 @@
 ﻿namespace ControleOrcamentoAPI.Models
 {
-    public class ContaCorrente
+    public class ContaCorrente : Entity
     {
         public Agencia Agencia { get; set; }
 

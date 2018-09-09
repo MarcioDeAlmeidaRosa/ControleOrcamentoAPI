@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D7F3C038-D44B-43EE-B8F1-47FF9EF53B99}</ProjectGuid>
+    <ProjectGuid>{68D4672F-27C6-4E2E-A242-886C21511D6F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ControleOrcamentoAPI.Models</RootNamespace>
-    <AssemblyName>ControleOrcamentoAPI.Models</AssemblyName>
+    <RootNamespace>ControleOrcamentoAPI.Orquestrador</RootNamespace>
+    <AssemblyName>ControleOrcamentoAPI.Orquestrador</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -41,11 +41,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Agencia.cs" />
-    <Compile Include="Banco.cs" />
-    <Compile Include="ContaCorrente.cs" />
-    <Compile Include="Entity.cs" />
+    <Compile Include="BancoOrquestrador.cs" />
+    <Compile Include="Orquestrador.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ControleOrcamentoAPI.DAO\ControleOrcamentoAPI.DAO.csproj">
+      <Project>{debd6685-acce-4855-ab57-fd4bc238c751}</Project>
+      <Name>ControleOrcamentoAPI.DAO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ControleOrcamentoAPI.Model\ControleOrcamentoAPI.Models.csproj">
+      <Project>{d7f3c038-d44b-43ee-b8f1-47ff9ef53b99}</Project>
+      <Name>ControleOrcamentoAPI.Models</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

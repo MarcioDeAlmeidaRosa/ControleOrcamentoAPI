@@ -1,6 +1,6 @@
 ﻿namespace ControleOrcamentoAPI.Models
 {
-    public class Banco
+    public class Banco : Entity
     {
         public string Codigo { get; set; }
 

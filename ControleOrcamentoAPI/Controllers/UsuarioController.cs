@@ -7,6 +7,7 @@ namespace ControleOrcamentoAPI.Controllers
     [RoutePrefix("api/usuario")]
     public class UsuarioController : BaseController
     {
+        [Authorize(Roles = "ADMIN, USER")]
         public HttpResponseMessage Get(long id)
         {
             try

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Net;
+using System.Linq;
+using Microsoft.Owin;
 using System.Net.Http;
 using System.Web.Http;
 using ControleOrcamentoAPI.Models;
@@ -9,7 +11,17 @@ namespace ControleOrcamentoAPI.Controllers
 {
     public abstract class BaseController : ApiController
     {
-        protected UsuarioAutenticado Token { get; }
+        protected UsuarioAutenticado User
+        {
+            get
+            {
+                IOwinContext ctx = Request.GetOwinContext();
+                var user = ctx.Authentication.User.Claims.FirstOrDefault(c => c.Type == "usuario").Value;
+                //TODO: RETORNAR USUÁRIO LOGADO
+
+                return null;
+            }
+        }
 
         protected HttpResponseMessage InternalErro(Exception exception)
         {

@@ -17,20 +17,6 @@ namespace ControleOrcamentoAPI.Controllers
             _orquestrador = new AuthOrquestrador();
         }
 
-        [Route("Login")]
-        [HttpPost]
-        public HttpResponseMessage Login(Usuario usuario)
-        {
-            try
-            {
-                return Request.CreateResponse(HttpStatusCode.OK, _orquestrador.Login(usuario));
-            }
-            catch (Exception ex)
-            {
-                return InternalErro(ex);
-            }
-        }
-
         [Route("Registrar")]
         [HttpPost]
         public HttpResponseMessage Registrar(Usuario usuario)
@@ -48,6 +34,7 @@ namespace ControleOrcamentoAPI.Controllers
 
         [Route("ValidarToken")]
         [HttpPost]
+        [Authorize(Roles = "ADMIN, USER")]
         public HttpResponseMessage ValidarToken(UsuarioAutenticado token)
         {
             try

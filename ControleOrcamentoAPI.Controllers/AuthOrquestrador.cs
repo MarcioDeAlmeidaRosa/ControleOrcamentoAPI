@@ -12,9 +12,9 @@ namespace ControleOrcamentoAPI.Orquestrador
             _dao = new AuthDAO();
         }
 
-        public UsuarioAutenticado Login(Usuario entidade)
+        public UsuarioAutenticado Login(string usuario, string senha)
         {
-            return _dao.Login(entidade);
+            return _dao.Login(usuario, senha);
         }
 
         public void Registrar(Usuario entidade)

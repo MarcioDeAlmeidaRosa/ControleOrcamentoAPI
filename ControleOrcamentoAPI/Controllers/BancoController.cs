@@ -17,11 +17,12 @@ namespace ControleOrcamentoAPI.Controllers
             _orquestrador = new BancoOrquestrador();
         }
 
+        [Authorize(Roles = "ADMIN, USER")]
         public HttpResponseMessage Get(long id)
         {
             try
             {
-                return Request.CreateResponse(HttpStatusCode.OK, _orquestrador.BuscarPorID(id, Token));
+                return Request.CreateResponse(HttpStatusCode.OK, _orquestrador.BuscarPorID(id, User));
             }
             catch (Exception ex)
             {
@@ -29,16 +30,23 @@ namespace ControleOrcamentoAPI.Controllers
             }
         }
 
+        [Authorize(Roles = "ADMIN, USER")]
         public HttpResponseMessage Get([FromUri]Banco banco)
         {
             try
             {
-                return Request.CreateResponse(HttpStatusCode.OK, _orquestrador.ListarPorEntidade(banco, Token));
+                return Request.CreateResponse(HttpStatusCode.OK, _orquestrador.ListarPorEntidade(banco, User));
             }
             catch (Exception ex)
             {
                 return InternalErro(ex);
             }
+        }
+
+        [Authorize(Roles = "ADMIN")]
+        public HttpResponseMessage Post()
+        {
+            return null;
         }
     }
 }

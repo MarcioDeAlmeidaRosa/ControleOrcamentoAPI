@@ -15,27 +15,27 @@ namespace ControleOrcamentoAPI.Orquestrador
 
         public Banco Atualizar(Banco entidade, UsuarioAutenticado token)
         {
-            return _dao.Atualizar(entidade);
+            return _dao.Atualizar(entidade, token);
         }
 
         public Banco BuscarPorID(long id, UsuarioAutenticado token)
         {
-            return _dao.BuscarPorID(id);
+            return _dao.BuscarPorID(id, token);
         }
 
         public Banco Criar(Banco entidade, UsuarioAutenticado token)
         {
-            return _dao.Criar(entidade);
+            return _dao.Criar(entidade, token);
         }
 
         public void Deletar(Banco entidade, UsuarioAutenticado token)
         {
-            _dao.Deletar(entidade);
+            _dao.Deletar(entidade, token);
         }
 
         public IList<Banco> ListarPorEntidade(Banco entidade, UsuarioAutenticado token)
         {
-            return _dao.ListarPorEntidade(entidade);
+            return _dao.ListarPorEntidade(entidade, token);
         }
     }
 }

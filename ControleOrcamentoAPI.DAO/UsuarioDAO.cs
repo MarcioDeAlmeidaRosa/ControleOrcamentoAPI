@@ -5,27 +5,27 @@ namespace ControleOrcamentoAPI.DAO
 {
     public class UsuarioDAO : DAO, IDAO<Usuario>
     {
-        public Usuario Atualizar(Usuario entidade)
+        public Usuario Atualizar(Usuario entidade, UsuarioAutenticado token)
         {
             throw new System.NotImplementedException();
         }
 
-        public Usuario BuscarPorID(long id)
+        public Usuario BuscarPorID(long id, UsuarioAutenticado token)
         {
             throw new System.NotImplementedException();
         }
 
-        public Usuario Criar(Usuario entidade)
+        public Usuario Criar(Usuario entidade, UsuarioAutenticado token)
         {
             throw new System.NotImplementedException();
         }
 
-        public void Deletar(Usuario entidade)
+        public void Deletar(Usuario entidade, UsuarioAutenticado token)
         {
             throw new System.NotImplementedException();
         }
 
-        public IList<Usuario> ListarPorEntidade(Usuario entidade)
+        public IList<Usuario> ListarPorEntidade(Usuario entidade, UsuarioAutenticado token)
         {
             throw new System.NotImplementedException();
         }

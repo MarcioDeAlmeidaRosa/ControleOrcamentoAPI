@@ -9,12 +9,12 @@ namespace ControleOrcamentoAPI.DAO
 {
     public class BancoDAO : DAO, IDAO<Banco>
     {
-        public Banco Atualizar(Banco entidade)
+        public Banco Atualizar(Banco entidade, UsuarioAutenticado token)
         {
             throw new System.NotImplementedException();
         }
 
-        public Banco BuscarPorID(long id)
+        public Banco BuscarPorID(long id, UsuarioAutenticado token)
         {
             Banco result = null;
             using (var cnn = new ConnectionFactory())
@@ -33,17 +33,17 @@ namespace ControleOrcamentoAPI.DAO
             return result;
         }
 
-        public Banco Criar(Banco entidade)
+        public Banco Criar(Banco entidade, UsuarioAutenticado token)
         {
             throw new System.NotImplementedException();
         }
 
-        public void Deletar(Banco entidade)
+        public void Deletar(Banco entidade, UsuarioAutenticado token)
         {
             throw new System.NotImplementedException();
         }
 
-        public IList<Banco> ListarPorEntidade(Banco entidade)
+        public IList<Banco> ListarPorEntidade(Banco entidade, UsuarioAutenticado token)
         {
             IList<Banco> result = null;
             using (var cnn = new ConnectionFactory())

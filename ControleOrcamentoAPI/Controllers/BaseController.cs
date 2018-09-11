@@ -17,9 +17,7 @@ namespace ControleOrcamentoAPI.Controllers
             {
                 IOwinContext ctx = Request.GetOwinContext();
                 var user = ctx.Authentication.User.Claims.FirstOrDefault(c => c.Type == "usuario").Value;
-                //TODO: RETORNAR USUÁRIO LOGADO
-
-                return null;
+                return Newtonsoft.Json.Linq.JObject.Parse(user).ToObject<UsuarioAutenticado>();
             }
         }
 

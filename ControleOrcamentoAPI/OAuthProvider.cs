@@ -23,7 +23,7 @@ namespace ControleOrcamentoAPI
                         new Claim(ClaimTypes.Name,usuario.Nome ),
                         new Claim("UserID",usuario.ID.ToString() ),
                         new Claim(ClaimTypes.Role,usuario.Role ),
-                        new Claim("usuario", usuario.ToString() ),
+                        new Claim("usuario", Newtonsoft.Json.JsonConvert.SerializeObject(usuario) ),
                         };
                         ClaimsIdentity oAuthIdentity = new ClaimsIdentity(claims, Startup.OAuthOptions.AuthenticationType);
                         context.Validated(new Microsoft.Owin.Security.AuthenticationTicket(oAuthIdentity, new Microsoft.Owin.Security.AuthenticationProperties() { }));

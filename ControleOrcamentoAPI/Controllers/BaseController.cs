@@ -5,7 +5,6 @@ using Microsoft.Owin;
 using System.Net.Http;
 using System.Web.Http;
 using ControleOrcamentoAPI.Models;
-using ControleOrcamentoAPI.Exceptions;
 
 namespace ControleOrcamentoAPI.Controllers
 {
@@ -21,16 +20,17 @@ namespace ControleOrcamentoAPI.Controllers
             }
         }
 
-        protected HttpResponseMessage InternalErro(Exception exception)
+        protected HttpResponseMessage InternalErro(Exception ex)
         {
-            HttpError erro = null;
-            if (exception.GetType() == typeof(NotFoundException))
+            switch (ex.GetType().ToString())
             {
-                erro = new HttpError(exception.Message);
-                return Request.CreateResponse(HttpStatusCode.NotFound, erro);
+                case "ControleOrcamentoAPI.Exceptions.RegistroNaoEncontradoException":
+                    return Request.CreateResponse(HttpStatusCode.NotFound, new HttpError(ex.Message));
+                case "ControleOrcamentoAPI.Exceptions.RegistroDuplicadoException":
+                    return Request.CreateResponse(HttpStatusCode.Ambiguous, new HttpError(ex.Message));
+                default:
+                    return Request.CreateResponse(HttpStatusCode.InternalServerError, new HttpError("Erro interno do servidor"));
             }
-            erro = new HttpError("Erro interno do servidor");
-            return Request.CreateResponse(HttpStatusCode.InternalServerError, erro);
         }
     }
 }

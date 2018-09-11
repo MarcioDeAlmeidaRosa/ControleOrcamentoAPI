@@ -3,6 +3,7 @@ using System.Data;
 using System.Text;
 using ControleOrcamentoAPI.Models;
 using ControleOrcamentoAPI.Exceptions;
+using System.Data.SqlClient;
 
 namespace ControleOrcamentoAPI.DAO
 {
@@ -22,7 +23,7 @@ namespace ControleOrcamentoAPI.DAO
                 cnn.AdicionarParametro("SENHA", senha);
                 var dados = cnn.ObterDados(sql.ToString());
                 if ((dados == null) || (dados.Rows == null) || (dados.Rows.Count < 1))
-                    throw new NotFoundException("Não encontrado registro com o filtro informado");
+                    throw new RegistroNaoEncontradoException("Não encontrado registro com o filtro informado");
                 result = MontarEntidade(dados.Rows[0]);
             }
             return result;
@@ -30,7 +31,36 @@ namespace ControleOrcamentoAPI.DAO
 
         public void Registrar(Usuario entidade)
         {
-            throw new System.NotImplementedException();
+            using (var cnn = new ConnectionFactory())
+            {
+                StringBuilder sql = new StringBuilder();
+                sql.AppendLine("INSERT INTO          ");
+                sql.AppendLine("    USUARIO          ");
+                sql.AppendLine("           (         ");
+                sql.AppendLine("            LOGIN ,  ");
+                sql.AppendLine("            EMAIL ,  ");
+                sql.AppendLine("            SENHA ,  ");
+                sql.AppendLine("            ROLE     ");
+                sql.AppendLine("           )         ");
+                sql.AppendLine("    VALUES (         ");
+                sql.AppendLine("            @LOGIN , ");
+                sql.AppendLine("            @EMAIL , ");
+                sql.AppendLine("            @SENHA , ");
+                sql.AppendLine("            'USER'   ");
+                sql.AppendLine("           )         ");
+                cnn.AdicionarParametro("LOGIN", entidade.Email);
+                cnn.AdicionarParametro("EMAIL", entidade.Email);
+                cnn.AdicionarParametro("SENHA", entidade.Senha);
+                try
+                {
+                    if (cnn.ExecutaComando(sql.ToString()) < 1) throw new RegistroNaoEncontradoException("Não encontrado registro com o filtro informado");
+                }
+                catch (SqlException ex)
+                {
+                    if (ex.Number == 2627) throw new RegistroDuplicadoException("Usuário já existe na aplicação");
+                    throw;
+                }
+            }
         }
 
         public UsuarioAutenticado ValidaToken(UsuarioAutenticado token)

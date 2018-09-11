@@ -26,7 +26,7 @@ namespace ControleOrcamentoAPI.DAO
                 cnn.AdicionarParametro("ID", id);
                 var dados = cnn.ObterDados(sql);
                 if ((dados == null) || (dados.Rows == null) || (dados.Rows.Count < 1))
-                    throw new NotFoundException("Não encontrado registro com o filtro informado");
+                    throw new RegistroNaoEncontradoException("Não encontrado registro com o filtro informado");
 
                 result = MontarEntidade(dados.Rows[0]);
             }
@@ -68,7 +68,7 @@ namespace ControleOrcamentoAPI.DAO
                 }
                 var dados = cnn.ObterDados(sql.ToString());
                 if ((dados == null) || (dados.Rows == null) || (dados.Rows.Count < 1))
-                    throw new NotFoundException("Não encontrado registro com o filtro informado");
+                    throw new RegistroNaoEncontradoException("Não encontrado registro com o filtro informado");
 
                 result = new List<Banco>();
                 foreach (DataRow dado in dados.Rows)

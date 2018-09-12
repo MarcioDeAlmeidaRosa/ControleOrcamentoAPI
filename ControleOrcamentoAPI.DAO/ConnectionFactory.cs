@@ -21,7 +21,7 @@ namespace ControleOrcamentoAPI.DAO
         static ConnectionFactory()
         {
             if (_cnn == null)
-                _cnn = new System.Data.SqlClient.SqlConnection(System.Configuration.ConfigurationSettings.AppSettings["stringConnection"].ToString());//TODO: REVER DEPRECADO
+                _cnn = new SqlConnection(System.Configuration.ConfigurationSettings.AppSettings["STRINGCONNECTION"].ToString());
         }
 
         internal IDbConnection GetConnection()

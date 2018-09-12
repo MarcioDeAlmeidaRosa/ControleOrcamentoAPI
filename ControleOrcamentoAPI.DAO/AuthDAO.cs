@@ -1,16 +1,34 @@
 ﻿using System;
 using System.Data;
 using System.Text;
+using System.Data.SqlClient;
 using ControleOrcamentoAPI.Models;
 using ControleOrcamentoAPI.Exceptions;
-using System.Data.SqlClient;
+using ControleOrcamentoAPI.Criptografia;
+using System.Web.Script.Serialization;
 
 namespace ControleOrcamentoAPI.DAO
 {
     public class AuthDAO : DAO
     {
+        private static int _LengthSalt = 0;
+
+        static AuthDAO()
+        {
+            try
+            {
+                _LengthSalt = 32;
+                int.TryParse(System.Configuration.ConfigurationSettings.AppSettings["LENGT_HSALT"].ToString(), out _LengthSalt);
+            }
+            catch (Exception)
+            {
+                _LengthSalt = 32;
+            }
+        }
+
         public UsuarioAutenticado Login(string usuario, string senha)
         {
+
             UsuarioAutenticado result;
             using (var cnn = new ConnectionFactory())
             {
@@ -18,11 +36,15 @@ namespace ControleOrcamentoAPI.DAO
                 sql.AppendLine("SELECT *       ");
                 sql.AppendLine("  FROM USUARIO ");
                 sql.AppendLine(" WHERE CONVERT(NVARCHAR(MAX), LOGIN) = @LOGIN ");
-                sql.AppendLine("   AND CONVERT(NVARCHAR(MAX), SENHA) = @SENHA ");
                 cnn.AdicionarParametro("LOGIN", usuario);
-                cnn.AdicionarParametro("SENHA", senha);
                 var dados = cnn.ObterDados(sql.ToString());
                 if ((dados == null) || (dados.Rows == null) || (dados.Rows.Count < 1))
+                    throw new RegistroNaoEncontradoException("Não encontrado registro com o filtro informado");
+                JavaScriptSerializer js = new JavaScriptSerializer();
+                byte[] SaltDeSerializado = js.Deserialize<byte[]>(Convert.ToString(dados.Rows[0]["SALT"]));
+                Salt _Salt = new Salt(_LengthSalt);
+                byte[] _senha = _Salt.GenerateDerivedKey(_LengthSalt, Encoding.UTF8.GetBytes(senha), SaltDeSerializado, 5000);
+                if (Convert.ToString(dados.Rows[0]["SENHA"]) != _Salt.getPassword(_senha))
                     throw new RegistroNaoEncontradoException("Não encontrado registro com o filtro informado");
                 result = MontarEntidade(dados.Rows[0]);
             }
@@ -33,6 +55,11 @@ namespace ControleOrcamentoAPI.DAO
         {
             using (var cnn = new ConnectionFactory())
             {
+                Salt _Salt = new Salt(_LengthSalt);
+                JavaScriptSerializer js = new JavaScriptSerializer();
+                byte[] SaltDeSerializado = _Salt.GenerateSalt();
+                string SerializeSalt = js.Serialize(SaltDeSerializado);
+                byte[] result = _Salt.GenerateDerivedKey(_LengthSalt, Encoding.UTF8.GetBytes(entidade.Senha), SaltDeSerializado, 5000);
                 StringBuilder sql = new StringBuilder();
                 sql.AppendLine("INSERT INTO          ");
                 sql.AppendLine("    USUARIO          ");
@@ -40,17 +67,20 @@ namespace ControleOrcamentoAPI.DAO
                 sql.AppendLine("            LOGIN ,  ");
                 sql.AppendLine("            EMAIL ,  ");
                 sql.AppendLine("            SENHA ,  ");
+                sql.AppendLine("            SALT ,  ");
                 sql.AppendLine("            ROLE     ");
                 sql.AppendLine("           )         ");
                 sql.AppendLine("    VALUES (         ");
                 sql.AppendLine("            @LOGIN , ");
                 sql.AppendLine("            @EMAIL , ");
                 sql.AppendLine("            @SENHA , ");
+                sql.AppendLine("            @SALT , ");
                 sql.AppendLine("            'USER'   ");
                 sql.AppendLine("           )         ");
                 cnn.AdicionarParametro("LOGIN", entidade.Email);
                 cnn.AdicionarParametro("EMAIL", entidade.Email);
-                cnn.AdicionarParametro("SENHA", entidade.Senha);
+                cnn.AdicionarParametro("SENHA", _Salt.getPassword(result));
+                cnn.AdicionarParametro("SALT", SerializeSalt);
                 try
                 {
                     if (cnn.ExecutaComando(sql.ToString()) < 1) throw new RegistroNaoEncontradoException("Não encontrado registro com o filtro informado");

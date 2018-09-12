@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.Owin.Security.OAuth;
 using ControleOrcamentoAPI.Orquestrador;
+using ControleOrcamentoAPI.Exceptions;
 
 namespace ControleOrcamentoAPI
 {
@@ -17,7 +18,7 @@ namespace ControleOrcamentoAPI
                 try
                 {
                     var usuario = authOrquestrador.Login(context.UserName, context.Password);
-                    if ((usuario != null) && (!string.IsNullOrWhiteSpace(usuario.Nome)))
+                    if ((usuario != null) && (usuario.ID > 0))
                     {
                         IList<Claim> claims = new List<Claim>() {
                         new Claim(ClaimTypes.Name,usuario.Nome ),
@@ -29,11 +30,26 @@ namespace ControleOrcamentoAPI
                         context.Validated(new Microsoft.Owin.Security.AuthenticationTicket(oAuthIdentity, new Microsoft.Owin.Security.AuthenticationProperties() { }));
                         return;
                     }
-                    context.SetError("erro", "Usuário não autenticado");
+                    context.SetError("3", "Usuário não autenticado");
+                }
+                catch (RegistroNaoEncontradoException ex)
+                {
+                    //Failure = 3
+                    context.SetError("3", ex.Message);
+                }
+                catch (BloqueadoException ex)
+                {
+                    // LockedOut = 1,
+                    context.SetError("1", ex.Message);
+                }
+                catch (VerificadoException ex)
+                {
+                    //RequiresVerification = 2,
+                    context.SetError("2", ex.Message);
                 }
                 catch (Exception)
                 {
-                    context.SetError("erro", "Usuário não autenticado");
+                    context.SetError("3", "Usuário não autenticado");
                 }
             });
         }

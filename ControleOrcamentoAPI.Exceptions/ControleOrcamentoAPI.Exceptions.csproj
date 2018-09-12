@@ -41,9 +41,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BloqueadoException.cs" />
     <Compile Include="RegistroNaoEncontradoException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegistroDuplicadoException.cs" />
+    <Compile Include="VerificadoException.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

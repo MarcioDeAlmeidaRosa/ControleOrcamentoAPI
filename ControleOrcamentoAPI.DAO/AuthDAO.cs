@@ -4,8 +4,8 @@ using System.Text;
 using System.Data.SqlClient;
 using ControleOrcamentoAPI.Models;
 using ControleOrcamentoAPI.Exceptions;
-using ControleOrcamentoAPI.Criptografia;
 using System.Web.Script.Serialization;
+using ControleOrcamentoAPI.Criptografia;
 
 namespace ControleOrcamentoAPI.DAO
 {
@@ -28,7 +28,6 @@ namespace ControleOrcamentoAPI.DAO
 
         public UsuarioAutenticado Login(string usuario, string senha)
         {
-
             UsuarioAutenticado result;
             using (var cnn = new ConnectionFactory())
             {
@@ -39,13 +38,20 @@ namespace ControleOrcamentoAPI.DAO
                 cnn.AdicionarParametro("LOGIN", usuario);
                 var dados = cnn.ObterDados(sql.ToString());
                 if ((dados == null) || (dados.Rows == null) || (dados.Rows.Count < 1))
-                    throw new RegistroNaoEncontradoException("Não encontrado registro com o filtro informado");
+                    throw new RegistroNaoEncontradoException("Usuário não localizado.");
                 JavaScriptSerializer js = new JavaScriptSerializer();
                 byte[] SaltDeSerializado = js.Deserialize<byte[]>(Convert.ToString(dados.Rows[0]["SALT"]));
                 Salt _Salt = new Salt(_LengthSalt);
                 byte[] _senha = _Salt.GenerateDerivedKey(_LengthSalt, Encoding.UTF8.GetBytes(senha), SaltDeSerializado, 5000);
                 if (Convert.ToString(dados.Rows[0]["SENHA"]) != _Salt.getPassword(_senha))
-                    throw new RegistroNaoEncontradoException("Não encontrado registro com o filtro informado");
+                    throw new RegistroNaoEncontradoException("Usuário não localizado.");
+                
+                if (!Convert.ToBoolean(dados.Rows[0]["VERIFICADO"]))
+                    throw new VerificadoException("Usuário não verificado.");
+
+                if (Convert.ToBoolean(dados.Rows[0]["BLOQUEADO"]))
+                    throw new BloqueadoException("Usuário bloqueado.");
+
                 result = MontarEntidade(dados.Rows[0]);
             }
             return result;
@@ -61,22 +67,28 @@ namespace ControleOrcamentoAPI.DAO
                 string SerializeSalt = js.Serialize(SaltDeSerializado);
                 byte[] result = _Salt.GenerateDerivedKey(_LengthSalt, Encoding.UTF8.GetBytes(entidade.Senha), SaltDeSerializado, 5000);
                 StringBuilder sql = new StringBuilder();
-                sql.AppendLine("INSERT INTO          ");
-                sql.AppendLine("    USUARIO          ");
-                sql.AppendLine("           (         ");
-                sql.AppendLine("            LOGIN ,  ");
-                sql.AppendLine("            EMAIL ,  ");
-                sql.AppendLine("            SENHA ,  ");
-                sql.AppendLine("            SALT ,  ");
-                sql.AppendLine("            ROLE     ");
-                sql.AppendLine("           )         ");
-                sql.AppendLine("    VALUES (         ");
-                sql.AppendLine("            @LOGIN , ");
-                sql.AppendLine("            @EMAIL , ");
-                sql.AppendLine("            @SENHA , ");
-                sql.AppendLine("            @SALT , ");
-                sql.AppendLine("            'USER'   ");
-                sql.AppendLine("           )         ");
+                sql.AppendLine("INSERT INTO              ");
+                sql.AppendLine("    USUARIO              ");
+                sql.AppendLine("           (             ");
+                sql.AppendLine("            LOGIN ,      ");
+                sql.AppendLine("            EMAIL ,      ");
+                sql.AppendLine("            SENHA ,      ");
+                sql.AppendLine("            SALT  ,      ");
+                sql.AppendLine("            ROLE  ,      ");
+                sql.AppendLine("            BLOQUEADO,   ");
+                sql.AppendLine("            VERIFICADO,  ");
+                sql.AppendLine("            DATA_CADASTRO");
+                sql.AppendLine("           )             ");
+                sql.AppendLine("    VALUES (             ");
+                sql.AppendLine("            @LOGIN ,     ");
+                sql.AppendLine("            @EMAIL ,     ");
+                sql.AppendLine("            @SENHA ,     ");
+                sql.AppendLine("            @SALT  ,     ");
+                sql.AppendLine("            'USER' ,     ");
+                sql.AppendLine("            1      ,     ");
+                sql.AppendLine("            0      ,     ");
+                sql.AppendLine("            GETDATE()    ");
+                sql.AppendLine("           )             ");
                 cnn.AdicionarParametro("LOGIN", entidade.Email);
                 cnn.AdicionarParametro("EMAIL", entidade.Email);
                 cnn.AdicionarParametro("SENHA", _Salt.getPassword(result));

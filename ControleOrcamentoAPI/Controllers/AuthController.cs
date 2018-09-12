@@ -17,7 +17,7 @@ namespace ControleOrcamentoAPI.Controllers
             _orquestrador = new AuthOrquestrador();
         }
 
-        [Route("Registrar")]
+        [Route("registrar")]
         [HttpPost]
         public HttpResponseMessage Registrar(Usuario usuario)
         {
@@ -32,7 +32,7 @@ namespace ControleOrcamentoAPI.Controllers
             }
         }
 
-        [Route("ValidarToken")]
+        [Route("validarToken")]
         [HttpPost]
         [Authorize(Roles = "ADMIN, USER")]
         public HttpResponseMessage ValidarToken(UsuarioAutenticado token)

@@ -99,7 +99,7 @@ namespace ControleOrcamentoAPI.DAO
                 }
                 catch (SqlException ex)
                 {
-                    if (ex.Number == 2627) throw new RegistroDuplicadoException("Usuário já existe na aplicação");
+                    if (ex.Number == 2627) throw new UsuarioDuplicadoException("Usuário já existe na aplicação");
                     throw;
                 }
             }

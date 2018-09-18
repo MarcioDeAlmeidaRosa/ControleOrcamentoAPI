@@ -32,17 +32,17 @@ namespace ControleOrcamentoAPI
                     }
                     context.SetError("3", "Usuário não autenticado");
                 }
-                catch (RegistroNaoEncontradoException ex)
+                catch (UsuarioNaoEncontradoException ex)
                 {
                     //Failure = 3
                     context.SetError("3", ex.Message);
                 }
-                catch (BloqueadoException ex)
+                catch (UsuarioBloqueadoException ex)
                 {
                     // LockedOut = 1,
                     context.SetError("1", ex.Message);
                 }
-                catch (VerificadoException ex)
+                catch (UsuarioNaoVerificadoException ex)
                 {
                     //RequiresVerification = 2,
                     context.SetError("2", ex.Message);

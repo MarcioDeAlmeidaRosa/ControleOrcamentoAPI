@@ -38,19 +38,19 @@ namespace ControleOrcamentoAPI.DAO
                 cnn.AdicionarParametro("LOGIN", usuario);
                 var dados = cnn.ObterDados(sql.ToString());
                 if ((dados == null) || (dados.Rows == null) || (dados.Rows.Count < 1))
-                    throw new RegistroNaoEncontradoException("Usuário não localizado.");
+                    throw new UsuarioNaoEncontradoException("Usuário não localizado.");
                 JavaScriptSerializer js = new JavaScriptSerializer();
                 byte[] SaltDeSerializado = js.Deserialize<byte[]>(Convert.ToString(dados.Rows[0]["SALT"]));
                 Salt _Salt = new Salt(_LengthSalt);
                 byte[] _senha = _Salt.GenerateDerivedKey(_LengthSalt, Encoding.UTF8.GetBytes(senha), SaltDeSerializado, 5000);
                 if (Convert.ToString(dados.Rows[0]["SENHA"]) != _Salt.getPassword(_senha))
-                    throw new RegistroNaoEncontradoException("Usuário não localizado.");
+                    throw new UsuarioNaoEncontradoException("Usuário não localizado.");
                 
                 if (!Convert.ToBoolean(dados.Rows[0]["VERIFICADO"]))
-                    throw new VerificadoException("Usuário não verificado.");
+                    throw new UsuarioNaoVerificadoException("Usuário não verificado.");
 
                 if (Convert.ToBoolean(dados.Rows[0]["BLOQUEADO"]))
-                    throw new BloqueadoException("Usuário bloqueado.");
+                    throw new UsuarioBloqueadoException("Usuário bloqueado.");
 
                 result = MontarEntidade(dados.Rows[0]);
             }
@@ -95,7 +95,7 @@ namespace ControleOrcamentoAPI.DAO
                 cnn.AdicionarParametro("SALT", SerializeSalt);
                 try
                 {
-                    if (cnn.ExecutaComando(sql.ToString()) < 1) throw new RegistroNaoEncontradoException("Não encontrado registro com o filtro informado");
+                    if (cnn.ExecutaComando(sql.ToString()) < 1) throw new UsuarioNaoEncontradoException("Não encontrado registro com o filtro informado");
                 }
                 catch (SqlException ex)
                 {

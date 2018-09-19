@@ -12,7 +12,7 @@ namespace ControleOrcamentoAPI.Models
         /// <summary>
         /// Propriedade <see cref="Codigo"/> responsável por armazenar o código do banco na aplicação
         /// </summary>
-        [Column("CODIGO", TypeName = "ntext")]
+        [Column("CODIGO", TypeName = "varchar")]
         [StringLength(10)]
         [Required]
         [ConcurrencyCheck]
@@ -21,7 +21,7 @@ namespace ControleOrcamentoAPI.Models
         /// <summary>
         /// Propriedade <see cref="Nome"/> responsável por armazenar o nome do banco na aplicação
         /// </summary>
-        [Column("NOME", TypeName = "ntext")]
+        [Column("NOME", TypeName = "varchar")]
         [StringLength(100)]
         [Required]
         public string Nome { get; set; }

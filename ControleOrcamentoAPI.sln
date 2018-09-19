@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControleOrcamentoAPI.Except
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControleOrcamentoAPI.Criptografia", "ControleOrcamentoAPI.Criptografia\ControleOrcamentoAPI.Criptografia.csproj", "{39D35E41-2F2D-470F-8857-3134B56FD9AD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControleOrcamentoAPI.DataAccess", "ControleOrcamentoAPI.DataAccess\ControleOrcamentoAPI.DataAccess.csproj", "{44B4B848-6497-4336-81B5-8D68AC621EBD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{39D35E41-2F2D-470F-8857-3134B56FD9AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{39D35E41-2F2D-470F-8857-3134B56FD9AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{39D35E41-2F2D-470F-8857-3134B56FD9AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44B4B848-6497-4336-81B5-8D68AC621EBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44B4B848-6497-4336-81B5-8D68AC621EBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44B4B848-6497-4336-81B5-8D68AC621EBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44B4B848-6497-4336-81B5-8D68AC621EBD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

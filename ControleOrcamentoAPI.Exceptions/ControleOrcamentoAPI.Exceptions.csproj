@@ -42,10 +42,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="UsuarioBloqueadoException.cs" />
-    <Compile Include="UsuarioNaoEncontradoException.cs" />
+    <Compile Include="RegistroNaoEncontradoException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UsuarioDuplicadoException.cs" />
+    <Compile Include="RegistroDuplicadoException.cs" />
     <Compile Include="UsuarioNaoVerificadoException.cs" />
+    <Compile Include="RegistroUpdateException.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

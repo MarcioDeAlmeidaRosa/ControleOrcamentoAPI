@@ -22,7 +22,7 @@ namespace ControleOrcamentoAPI.Controllers
         {
             try
             {
-                return Request.CreateResponse(HttpStatusCode.OK, _orquestrador.BuscarPorID(id, User));
+                return Request.CreateResponse(HttpStatusCode.OK, _orquestrador.BuscarPorID(id));
             }
             catch (Exception ex)
             {
@@ -35,7 +35,7 @@ namespace ControleOrcamentoAPI.Controllers
         {
             try
             {
-                return Request.CreateResponse(HttpStatusCode.OK, _orquestrador.ListarPorEntidade(banco, User));
+                return Request.CreateResponse(HttpStatusCode.OK, _orquestrador.ListarPorEntidade(banco));
             }
             catch (Exception ex)
             {
@@ -44,9 +44,43 @@ namespace ControleOrcamentoAPI.Controllers
         }
 
         [Authorize(Roles = "ADMIN")]
-        public HttpResponseMessage Post()
+        public HttpResponseMessage Post([FromBody]Banco banco)
         {
-            return null;
+            try
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, _orquestrador.Criar(banco, User));
+            }
+            catch (Exception ex)
+            {
+                return InternalErro(ex);
+            }
+        }
+
+        [Authorize(Roles = "ADMIN")]
+        public HttpResponseMessage Put([FromBody]Banco banco)
+        {
+            try
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, _orquestrador.Atualizar(banco, User));
+            }
+            catch (Exception ex)
+            {
+                return InternalErro(ex);
+            }
+        }
+
+        [Authorize(Roles = "ADMIN")]
+        public HttpResponseMessage Delete([FromUri]long id)
+        {
+            try
+            {
+                _orquestrador.Deletar(id, User);
+                return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            catch (Exception ex)
+            {
+                return InternalErro(ex);
+            }
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Text;
+using System.Linq;
 using System.Data;
 using System.Collections.Generic;
 using ControleOrcamentoAPI.Models;
@@ -7,84 +7,87 @@ using ControleOrcamentoAPI.Exceptions;
 
 namespace ControleOrcamentoAPI.DAO
 {
-    public class BancoDAO : DAO, IDAO<Banco>
+    public class BancoDAO : DAO<Banco>, IDAO<Banco>
     {
         public Banco Atualizar(Banco entidade, UsuarioAutenticado token)
         {
-            throw new System.NotImplementedException();
+            try
+            {
+                var entidadeLocalizada = dbContext.Bancos.Where(data => data.ID == entidade.ID).FirstOrDefault();
+                if (entidadeLocalizada == null)
+                    throw new RegistroNaoEncontradoException("Banco não localizado.");
+                entidadeLocalizada = entidade;
+                entidadeLocalizada.DataAlteracao = DateTime.Now;
+                entidadeLocalizada.UsuarioAlteracao = token.ID;
+                dbContext.SaveChanges();
+                return entidadeLocalizada;
+            }
+            catch (Exception ex)
+            {
+                throw new RegistroUpdateException(ex.ToString());
+            }
         }
 
-        public Banco BuscarPorID(long id, UsuarioAutenticado token)
+        public Banco BuscarPorID(long id)
         {
-            Banco result = null;
-            using (var cnn = new ConnectionFactory())
-            {
-                var sql = @"SELECT * 
-                              FROM BANCO 
-                             WHERE ID = @ID
-                           ";
-                cnn.AdicionarParametro("ID", id);
-                var dados = cnn.ObterDados(sql);
-                if ((dados == null) || (dados.Rows == null) || (dados.Rows.Count < 1))
-                    throw new UsuarioNaoEncontradoException("Não encontrado registro com o filtro informado");
-
-                result = MontarEntidade(dados.Rows[0]);
-            }
-            return result;
+            var entidadeLocalizada = dbContext.Bancos.Where(data => data.ID == id).FirstOrDefault();
+            if (entidadeLocalizada == null)
+                throw new RegistroNaoEncontradoException("Banco não localizado.");
+            return entidadeLocalizada;
         }
 
         public Banco Criar(Banco entidade, UsuarioAutenticado token)
         {
-            throw new System.NotImplementedException();
-        }
-
-        public void Deletar(Banco entidade, UsuarioAutenticado token)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public IList<Banco> ListarPorEntidade(Banco entidade, UsuarioAutenticado token)
-        {
-            IList<Banco> result = null;
-            using (var cnn = new ConnectionFactory())
+            try
             {
-                StringBuilder sql = new StringBuilder();
-                sql.AppendLine("SELECT *     ");
-                sql.AppendLine("  FROM BANCO ");
-                sql.AppendLine(" WHERE 1 = 1 ");
-                if (entidade != null)
-                {
-                    if (!string.IsNullOrWhiteSpace(entidade.Codigo))
-                    {
-                        sql.AppendLine(" AND CONVERT(NVARCHAR(MAX), CODIGO) = @CODIGO ");
-                        cnn.AdicionarParametro("CODIGO", entidade.Codigo);
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(entidade.Nome))
-                    {
-                        sql.AppendLine(" AND CONVERT(NVARCHAR(MAX), NOME) LIKE @NOME ");
-                        cnn.AdicionarParametro("NOME", string.Format("%{0}%", entidade.Nome));
-                    }
-                }
-                var dados = cnn.ObterDados(sql.ToString());
-                if ((dados == null) || (dados.Rows == null) || (dados.Rows.Count < 1))
-                    throw new UsuarioNaoEncontradoException("Não encontrado registro com o filtro informado");
-
-                result = new List<Banco>();
-                foreach (DataRow dado in dados.Rows)
-                    result.Add(MontarEntidade(dado));
+                var entidadeLocalizada = dbContext.Bancos.Where(data => data.Codigo.Equals(entidade.Codigo, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
+                if (entidadeLocalizada != null)
+                    throw new RegistroNaoEncontradoException("Banco já cadastrado.");
+                entidade.DataInclusao = DateTime.Now;
+                entidade.UsuarioInclusao = token.ID;
+                dbContext.Bancos.Add(entidade);
+                dbContext.SaveChanges();
+                return entidade;
             }
+            catch (Exception ex)
+            {
+                throw new RegistroUpdateException(ex.ToString());
+            }
+        }
+
+        public void Deletar(long id, UsuarioAutenticado token)
+        {
+            try
+            {
+                var entidadeLocalizada = dbContext.Bancos.Where(data => data.ID == id).FirstOrDefault();
+                if (entidadeLocalizada == null)
+                    throw new RegistroNaoEncontradoException("Banco não localizado.");
+                entidadeLocalizada.DataCancelamento = DateTime.Now;
+                entidadeLocalizada.UsuarioCancelamento = token.ID;
+                dbContext.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw new RegistroUpdateException(ex.ToString());
+            }
+        }
+
+        public IList<Banco> ListarPorEntidade(Banco entidade)
+        {
+            query = from queryFiltro
+                      in dbContext.Bancos.AsNoTracking()
+                    where queryFiltro.DataCancelamento == null
+                    select queryFiltro;
+            query = AdicionarFiltrosComuns(entidade);
+            if (!string.IsNullOrWhiteSpace(entidade.Codigo))
+                query = from filtro in query where filtro.Codigo.Equals(entidade.Codigo, StringComparison.InvariantCultureIgnoreCase) select filtro;
+            if (!string.IsNullOrWhiteSpace(entidade.Nome))
+                query = from filtro in query where filtro.Nome.Equals(entidade.Nome, StringComparison.InvariantCultureIgnoreCase) select filtro;
+            var result = query.ToArray().OrderBy(p => p.Nome).ToArray();
+            if (result == null)
+                throw new RegistroNaoEncontradoException("Banco não localizado.");
             return result;
         }
 
-        private Banco MontarEntidade(DataRow dado)
-        {
-            return new Banco()
-            {
-                ID = Convert.ToInt64(dado["ID"]),
-                Nome = Convert.ToString(dado["NOME"]),
-                Codigo = Convert.ToString(dado["CODIGO"]),
-            };
-        }
     }
 }

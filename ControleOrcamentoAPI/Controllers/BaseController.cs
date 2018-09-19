@@ -22,12 +22,16 @@ namespace ControleOrcamentoAPI.Controllers
 
         protected HttpResponseMessage InternalErro(Exception ex)
         {
+            //Appendix A. HTTP Response Status Codes
+            //https://developer.yahoo.com/social/rest_api_guide/http-response-codes.html
             switch (ex.GetType().ToString())
             {
                 case "ControleOrcamentoAPI.Exceptions.RegistroNaoEncontradoException":
                     return Request.CreateResponse(HttpStatusCode.NotFound, new HttpError(ex.Message));
                 case "ControleOrcamentoAPI.Exceptions.RegistroDuplicadoException":
                     return Request.CreateResponse(HttpStatusCode.Ambiguous, new HttpError(ex.Message));
+                case "ControleOrcamentoAPI.Exceptions.RegistroUpdateException":
+                    return Request.CreateResponse(HttpStatusCode.NoContent, new HttpError(ex.Message));
                 default:
                     return Request.CreateResponse(HttpStatusCode.InternalServerError, new HttpError("Erro interno do servidor"));
             }

@@ -5,13 +5,13 @@ namespace ControleOrcamentoAPI.Orquestrador
 {
     public interface IOrquestrador<T> where T : class, new()
     {
-        T BuscarPorID(long id, UsuarioAutenticado token);
+        T BuscarPorID(long id);
 
-        IList<T> ListarPorEntidade(T entidade, UsuarioAutenticado token);
+        IList<T> ListarPorEntidade(T entidade);
 
         T Criar(T entidade, UsuarioAutenticado token);
 
-        void Deletar(T entidade, UsuarioAutenticado token);
+        void Deletar(long id, UsuarioAutenticado token);
 
         T Atualizar(T entidade, UsuarioAutenticado token);
     }

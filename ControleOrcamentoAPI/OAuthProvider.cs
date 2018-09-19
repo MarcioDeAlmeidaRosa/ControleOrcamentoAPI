@@ -3,8 +3,8 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.Owin.Security.OAuth;
-using ControleOrcamentoAPI.Orquestrador;
 using ControleOrcamentoAPI.Exceptions;
+using ControleOrcamentoAPI.Orquestrador;
 
 namespace ControleOrcamentoAPI
 {
@@ -21,9 +21,9 @@ namespace ControleOrcamentoAPI
                     if ((usuario != null) && (usuario.ID > 0))
                     {
                         IList<Claim> claims = new List<Claim>() {
-                        new Claim(ClaimTypes.Name,usuario.Nome ),
+                        new Claim(ClaimTypes.Name,!string.IsNullOrWhiteSpace(usuario.Nome)?usuario.Nome:usuario.Email ),
                         new Claim("UserID",usuario.ID.ToString() ),
-                        new Claim(ClaimTypes.Role,usuario.Role ),
+                        new Claim(ClaimTypes.Role,usuario.Claim ),
                         new Claim("usuario", Newtonsoft.Json.JsonConvert.SerializeObject(usuario) ),
                         };
                         ClaimsIdentity oAuthIdentity = new ClaimsIdentity(claims, Startup.OAuthOptions.AuthenticationType);
@@ -32,7 +32,7 @@ namespace ControleOrcamentoAPI
                     }
                     context.SetError("3", "Usuário não autenticado");
                 }
-                catch (UsuarioNaoEncontradoException ex)
+                catch (RegistroNaoEncontradoException ex)
                 {
                     //Failure = 3
                     context.SetError("3", ex.Message);

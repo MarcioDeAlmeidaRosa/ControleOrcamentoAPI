@@ -2,6 +2,9 @@
 {
     public abstract class Orquestrador
     {
-       
+        public Orquestrador()
+        {
+
+        }
     }
 }

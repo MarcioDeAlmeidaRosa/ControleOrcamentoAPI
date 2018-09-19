@@ -1,15 +1,17 @@
 ﻿using System;
+using System.Linq;
 using System.Data;
 using System.Text;
-using System.Data.SqlClient;
+using System.Configuration;
 using ControleOrcamentoAPI.Models;
+using System.Data.Entity.Validation;
 using ControleOrcamentoAPI.Exceptions;
 using System.Web.Script.Serialization;
 using ControleOrcamentoAPI.Criptografia;
 
 namespace ControleOrcamentoAPI.DAO
 {
-    public class AuthDAO : DAO
+    public class AuthDAO : DAO<Usuario>
     {
         private static int _LengthSalt = 0;
 
@@ -18,7 +20,7 @@ namespace ControleOrcamentoAPI.DAO
             try
             {
                 _LengthSalt = 32;
-                int.TryParse(System.Configuration.ConfigurationSettings.AppSettings["LENGT_HSALT"].ToString(), out _LengthSalt);
+                int.TryParse(ConfigurationManager.AppSettings["LENGT_HSALT"].ToString(), out _LengthSalt);
             }
             catch (Exception)
             {
@@ -26,99 +28,70 @@ namespace ControleOrcamentoAPI.DAO
             }
         }
 
-        public UsuarioAutenticado Login(string usuario, string senha)
+        public UsuarioAutenticado Login(string login, string senha)
         {
-            UsuarioAutenticado result;
-            using (var cnn = new ConnectionFactory())
+            var entidadeLocalizada = dbContext.Usuarios.Where(data => data.Login.Equals(login, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
+
+            if (entidadeLocalizada == null)
+                throw new RegistroNaoEncontradoException("Usuário não localizado.");
+
+            JavaScriptSerializer js = new JavaScriptSerializer();
+            byte[] SaltDeSerializado = js.Deserialize<byte[]>(entidadeLocalizada.Salt);
+            Salt _Salt = new Salt(_LengthSalt);
+            byte[] _senha = _Salt.GenerateDerivedKey(_LengthSalt, Encoding.UTF8.GetBytes(senha), SaltDeSerializado, 5000);
+            if (entidadeLocalizada.Senha != _Salt.getPassword(_senha))
+                throw new RegistroNaoEncontradoException("Usuário não localizado.");
+
+            if (!entidadeLocalizada.Verificado)
+                throw new UsuarioNaoVerificadoException("Usuário não verificado.");
+
+            if (entidadeLocalizada.Bloqueado)
+                throw new UsuarioBloqueadoException("Usuário bloqueado.");
+
+            return new UsuarioAutenticado()
             {
-                StringBuilder sql = new StringBuilder();
-                sql.AppendLine("SELECT *       ");
-                sql.AppendLine("  FROM USUARIO ");
-                sql.AppendLine(" WHERE CONVERT(NVARCHAR(MAX), LOGIN) = @LOGIN ");
-                cnn.AdicionarParametro("LOGIN", usuario);
-                var dados = cnn.ObterDados(sql.ToString());
-                if ((dados == null) || (dados.Rows == null) || (dados.Rows.Count < 1))
-                    throw new UsuarioNaoEncontradoException("Usuário não localizado.");
-                JavaScriptSerializer js = new JavaScriptSerializer();
-                byte[] SaltDeSerializado = js.Deserialize<byte[]>(Convert.ToString(dados.Rows[0]["SALT"]));
-                Salt _Salt = new Salt(_LengthSalt);
-                byte[] _senha = _Salt.GenerateDerivedKey(_LengthSalt, Encoding.UTF8.GetBytes(senha), SaltDeSerializado, 5000);
-                if (Convert.ToString(dados.Rows[0]["SENHA"]) != _Salt.getPassword(_senha))
-                    throw new UsuarioNaoEncontradoException("Usuário não localizado.");
-                
-                if (!Convert.ToBoolean(dados.Rows[0]["VERIFICADO"]))
-                    throw new UsuarioNaoVerificadoException("Usuário não verificado.");
-
-                if (Convert.ToBoolean(dados.Rows[0]["BLOQUEADO"]))
-                    throw new UsuarioBloqueadoException("Usuário bloqueado.");
-
-                result = MontarEntidade(dados.Rows[0]);
-            }
-            return result;
+                ID = entidadeLocalizada.ID,
+                Nome = entidadeLocalizada.Nome,
+                Email = entidadeLocalizada.Email,
+                Claim = entidadeLocalizada.Claim
+            };
         }
 
         public void Registrar(Usuario entidade)
         {
-            using (var cnn = new ConnectionFactory())
+            try
             {
+                var entidadeLocalizada = dbContext.Usuarios.Where(data => data.Login.Equals(entidade.Login, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
+                if (entidadeLocalizada != null)
+                    throw new RegistroDuplicadoException("Usuário já existe na aplicação");
+
                 Salt _Salt = new Salt(_LengthSalt);
                 JavaScriptSerializer js = new JavaScriptSerializer();
                 byte[] SaltDeSerializado = _Salt.GenerateSalt();
                 string SerializeSalt = js.Serialize(SaltDeSerializado);
                 byte[] result = _Salt.GenerateDerivedKey(_LengthSalt, Encoding.UTF8.GetBytes(entidade.Senha), SaltDeSerializado, 5000);
-                StringBuilder sql = new StringBuilder();
-                sql.AppendLine("INSERT INTO              ");
-                sql.AppendLine("    USUARIO              ");
-                sql.AppendLine("           (             ");
-                sql.AppendLine("            LOGIN ,      ");
-                sql.AppendLine("            EMAIL ,      ");
-                sql.AppendLine("            SENHA ,      ");
-                sql.AppendLine("            SALT  ,      ");
-                sql.AppendLine("            ROLE  ,      ");
-                sql.AppendLine("            BLOQUEADO,   ");
-                sql.AppendLine("            VERIFICADO,  ");
-                sql.AppendLine("            DATA_CADASTRO");
-                sql.AppendLine("           )             ");
-                sql.AppendLine("    VALUES (             ");
-                sql.AppendLine("            @LOGIN ,     ");
-                sql.AppendLine("            @EMAIL ,     ");
-                sql.AppendLine("            @SENHA ,     ");
-                sql.AppendLine("            @SALT  ,     ");
-                sql.AppendLine("            'USER' ,     ");
-                sql.AppendLine("            1      ,     ");
-                sql.AppendLine("            0      ,     ");
-                sql.AppendLine("            GETDATE()    ");
-                sql.AppendLine("           )             ");
-                cnn.AdicionarParametro("LOGIN", entidade.Email);
-                cnn.AdicionarParametro("EMAIL", entidade.Email);
-                cnn.AdicionarParametro("SENHA", _Salt.getPassword(result));
-                cnn.AdicionarParametro("SALT", SerializeSalt);
-                try
-                {
-                    if (cnn.ExecutaComando(sql.ToString()) < 1) throw new UsuarioNaoEncontradoException("Não encontrado registro com o filtro informado");
-                }
-                catch (SqlException ex)
-                {
-                    if (ex.Number == 2627) throw new UsuarioDuplicadoException("Usuário já existe na aplicação");
-                    throw;
-                }
+                entidade.Login = entidade.Email;
+                entidade.Senha = _Salt.getPassword(result);
+                entidade.Salt = SerializeSalt;
+                entidade.Claim = "USER";
+                entidade.Bloqueado = true;
+                entidade.DataBloqueio = DateTime.Now;
+                entidade.Verificado = false;
+                dbContext.Usuarios.Add(entidade);
+                dbContext.SaveChanges();
+            }
+            catch (DbEntityValidationException ex)
+            {
+                StringBuilder st = new StringBuilder();
+                ex.EntityValidationErrors.ToList().ForEach(errs => errs.ValidationErrors.ToList().ForEach(err => st.AppendLine(err.ErrorMessage)));
+                //TODO AJUSTAR O EXCEPTION DO RETORNO
+                throw new Exception(st.ToString(), ex);
             }
         }
 
         public UsuarioAutenticado ValidaToken(UsuarioAutenticado token)
         {
             throw new System.NotImplementedException();
-        }
-
-        private UsuarioAutenticado MontarEntidade(DataRow dado)
-        {
-            return new UsuarioAutenticado()
-            {
-                ID = Convert.ToInt64(dado["ID"]),
-                Nome = Convert.ToString(dado["NOME"]),
-                Email = Convert.ToString(dado["EMAIL"]),
-                Role = Convert.ToString(dado["ROLE"]),
-            };
         }
     }
 }

@@ -6,36 +6,44 @@ namespace ControleOrcamentoAPI.Orquestrador
 {
     public class UsuarioOrquestrador : Orquestrador, IOrquestrador<Usuario>
     {
-        private static UsuarioDAO _dao;
-
-        static UsuarioOrquestrador()
-        {
-            _dao = new UsuarioDAO();
-        }
-
         public Usuario Atualizar(Usuario entidade, UsuarioAutenticado token)
         {
-            return _dao.Atualizar(entidade, token);
+            using (var dao = new UsuarioDAO())
+            {
+                return dao.Atualizar(entidade, token);
+            }
         }
 
-        public Usuario BuscarPorID(long id, UsuarioAutenticado token)
+        public Usuario BuscarPorID(long id)
         {
-            return _dao.BuscarPorID(id, token);
+            using (var dao = new UsuarioDAO())
+            {
+                return dao.BuscarPorID(id);
+            }
         }
 
         public Usuario Criar(Usuario entidade, UsuarioAutenticado token)
         {
-            return _dao.Criar(entidade, token);
+            using (var dao = new UsuarioDAO())
+            {
+                return dao.Criar(entidade, token);
+            }
         }
 
-        public void Deletar(Usuario entidade, UsuarioAutenticado token)
+        public void Deletar(long id, UsuarioAutenticado token)
         {
-            _dao.Deletar(entidade, token);
+            using (var dao = new UsuarioDAO())
+            {
+                dao.Deletar(id, token);
+            }
         }
 
-        public IList<Usuario> ListarPorEntidade(Usuario entidade, UsuarioAutenticado token)
+        public IList<Usuario> ListarPorEntidade(Usuario entidade)
         {
-            return _dao.ListarPorEntidade(entidade, token);
+            using (var dao = new UsuarioDAO())
+            {
+                return dao.ListarPorEntidade(entidade);
+            }
         }
     }
 }

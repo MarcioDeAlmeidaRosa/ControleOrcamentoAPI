@@ -43,6 +43,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.2\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
     </Reference>
@@ -137,6 +143,10 @@
     <ProjectReference Include="..\ControleOrcamentoAPI.Controllers\ControleOrcamentoAPI.Orquestrador.csproj">
       <Project>{68d4672f-27c6-4e2e-a242-886c21511d6f}</Project>
       <Name>ControleOrcamentoAPI.Orquestrador</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ControleOrcamentoAPI.DataAccess\ControleOrcamentoAPI.DataAccess.csproj">
+      <Project>{44b4b848-6497-4336-81b5-8d68ac621ebd}</Project>
+      <Name>ControleOrcamentoAPI.DataAccess</Name>
     </ProjectReference>
     <ProjectReference Include="..\ControleOrcamentoAPI.Exceptions\ControleOrcamentoAPI.Exceptions.csproj">
       <Project>{a6676e5d-48f6-4475-8031-fa64c9fd37a3}</Project>

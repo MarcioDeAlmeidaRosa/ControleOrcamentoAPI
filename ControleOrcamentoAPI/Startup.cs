@@ -1,5 +1,6 @@
 ﻿using Owin;
 using System;
+using System.Configuration;
 using Microsoft.Owin.Security.OAuth;
 
 namespace ControleOrcamentoAPI
@@ -18,7 +19,7 @@ namespace ControleOrcamentoAPI
             OAuthOptions = new OAuthAuthorizationServerOptions
             {
                 AccessTokenExpireTimeSpan = TimeSpan.FromDays(1),
-                AllowInsecureHttp = true,
+                AllowInsecureHttp = Convert.ToBoolean(ConfigurationManager.AppSettings["PERMITIR_CHAMADA_HTTP"]),
                 TokenEndpointPath = new Microsoft.Owin.PathString("/api/auth/login"),
                 Provider = new OAuthProvider()
             };

@@ -119,6 +119,7 @@
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AuthController.cs" />
+    <Compile Include="Controllers\AgenciaController.cs" />
     <Compile Include="Controllers\BancoController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\UsuarioController.cs" />

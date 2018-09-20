@@ -14,22 +14,22 @@ namespace ControleOrcamentoAPI.Models
         /// Propriedade <see cref="Nome"/> responsável por armazenar o primeiro nome do usuário na aplicação
         /// </summary>
         [Column("NOME", TypeName = "varchar")]
-        [StringLength(50)]
+        [StringLength(50, ErrorMessage = "{0} pode conter no máximo {1} caracteres.")]
         public string Nome { get; set; }
 
         /// <summary>
         /// Propriedade <see cref="SobreNome"/> responsável por armazenar o restante do nome do usuário na aplicação
         /// </summary>
         [Column("SOBRENOME", TypeName = "varchar")]
-        [StringLength(100)]
+        [StringLength(100, ErrorMessage = "{0} poode conter no máximo {1} caracteres.")]
         public string SobreNome { get; set; }
 
         /// <summary>
         /// Propriedade <see cref="Email"/> responsável por armazenar o e-mail do usuário na aplicação
         /// </summary>
         [Column("EMAIL", TypeName = "varchar")]
-        [StringLength(254)]
-        [Required]
+        [StringLength(254, ErrorMessage = "{0} poode conter no máximo {1} caracteres.")]
+        [Required(ErrorMessage = "Campo {0} é obrigatório.")]
         [RegularExpression(@"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$", ErrorMessage = "E-mail inválido!")]
         public string Email { get; set; }
 
@@ -37,8 +37,8 @@ namespace ControleOrcamentoAPI.Models
         /// Propriedade <see cref="Login"/> responsável por armazenar o login do usuário na aplicação
         /// </summary>
         [Column("LOGIN", TypeName = "varchar")]
-        [StringLength(254)]
-        [Required]
+        [StringLength(254, ErrorMessage = "{0} poode conter no máximo {1} caracteres.")]
+        [Required(ErrorMessage = "Campo {0} é obrigatório.")]
         [RegularExpression(@"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$", ErrorMessage = "E-mail do login inválido!")]
         [ConcurrencyCheck]
         public string Login { get; set; }
@@ -47,15 +47,15 @@ namespace ControleOrcamentoAPI.Models
         /// Propriedade <see cref="Senha"/> responsável por armazenar a senha do usuário na aplicação
         /// </summary>
         [Column("SENHA", TypeName = "varchar")]
-        [Required]
+        [Required(ErrorMessage = "Campo {0} é obrigatório.")]
         public string Senha { get; set; }
 
         /// <summary>
         /// Propriedade <see cref="Claim"/> responsável por armazenar o papel do usuário na aplicação (ADMIN/USER)
         /// </summary>
         [Column("CLAIM", TypeName = "varchar")]
-        [StringLength(20)]
-        [Required]
+        [StringLength(20, ErrorMessage = "{0} poode conter no máximo {1} caracteres.")]
+        [Required(ErrorMessage = "Campo {0} é obrigatório.")]
         public string Claim { get; set; }
 
         /// <summary>
@@ -68,21 +68,21 @@ namespace ControleOrcamentoAPI.Models
         /// Propriedade <see cref="Verificado"/> responsável por armazenar o flag de usuário verificado na aplicação (ADMIN/USER)
         /// </summary>
         [Column("VERIFICADO", TypeName = "bit")]
-        [Required]
+        [Required(ErrorMessage = "Campo {0} é obrigatório.")]
         public bool Verificado { get; set; }
 
         /// <summary>
         /// Propriedade <see cref="Salt"/> responsável por armazenar o Salt da senha do usuário na aplicação
         /// </summary>
         [Column("SALT", TypeName = "varchar")]
-        [Required]
+        [Required(ErrorMessage = "Campo {0} é obrigatório.")]
         public string Salt { get; set; }//TODO: VER SE ACEITA  INTERNAL
 
         /// <summary>
         /// Propriedade <see cref="Bloqueado"/> responsável por armazenar o flag de usuário bloqueado na aplicação (ADMIN/USER)
         /// </summary>
         [Column("BLOQUEADO", TypeName = "bit")]
-        [Required]
+        [Required(ErrorMessage = "Campo {0} é obrigatório.")]
         public bool Bloqueado { get; set; }
        
         /// <summary>

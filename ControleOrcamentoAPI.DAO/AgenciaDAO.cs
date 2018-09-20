@@ -11,25 +11,25 @@ using System.Data.Entity.Validation;
 
 namespace ControleOrcamentoAPI.DAO
 {
-    public class BancoDAO : DAO<Banco>, IDAO<Banco>
+    public class AgenciaDAO : DAO<Agencia>, IDAO<Agencia>
     {
-        static BancoDAO()
+        static AgenciaDAO()
         {
             Mapper.Initialize(cfg =>
             {
-                cfg.CreateMap<Banco, Banco>().ForMember(m => m.ID, o => o.Ignore());
+                cfg.CreateMap<Agencia, Agencia>().ForMember(m => m.ID, o => o.Ignore());
             });
         }
 
-        public Banco Atualizar(Banco entidade, UsuarioAutenticado token)
+        public Agencia Atualizar(Agencia entidade, UsuarioAutenticado token)
         {
             if (entidade == null)
                 throw new ArgumentException("Não informado a entidade para atualização");
             try
             {
-                var entidadeLocalizada = dbContext.Bancos.Where(data => data.ID == entidade.ID).FirstOrDefault();
+                var entidadeLocalizada = dbContext.Agencias.Where(data => data.ID == entidade.ID).FirstOrDefault();
                 if (entidadeLocalizada == null)
-                    throw new RegistroNaoEncontradoException("Banco não localizado.");
+                    throw new RegistroNaoEncontradoException("Agência não localizada.");
                 Mapper.Map(entidade, entidadeLocalizada);
                 entidadeLocalizada.DataAlteracao = DateTime.Now;
                 entidadeLocalizada.UsuarioAlteracao = token.ID;
@@ -38,7 +38,7 @@ namespace ControleOrcamentoAPI.DAO
             }
             catch (DbUpdateException ex)
             {
-                throw new RegistroUpdateException(string.Format("Banco já cadastrado com o codigo {0}", entidade.Codigo), ex);
+                throw new RegistroUpdateException(string.Format("Agência já cadastrado com o número para este banco {0}", entidade.Numero), ex);
             }
             catch (DbEntityValidationException ex)
             {
@@ -48,17 +48,18 @@ namespace ControleOrcamentoAPI.DAO
             }
         }
 
-        public Banco BuscarPorID(long id)
+        public Agencia BuscarPorID(long id)
         {
             if (id <= 0)
                 throw new ArgumentException("Não informado o ID para pesquisar");
-            var entidadeLocalizada = dbContext.Bancos.Where(data => data.ID == id).FirstOrDefault();
+
+            var entidadeLocalizada = dbContext.Agencias.Where(data => data.ID == id).FirstOrDefault();
             if (entidadeLocalizada == null)
-                throw new RegistroNaoEncontradoException("Banco não localizado.");
+                throw new RegistroNaoEncontradoException("Agência não localizada.");
             return entidadeLocalizada;
         }
 
-        public Banco Criar(Banco entidade, UsuarioAutenticado token)
+        public Agencia Criar(Agencia entidade, UsuarioAutenticado token)
         {
             if (entidade == null)
                 throw new ArgumentException("Não informado a entidade para inclusão");
@@ -66,13 +67,13 @@ namespace ControleOrcamentoAPI.DAO
             {
                 entidade.DataInclusao = DateTime.Now;
                 entidade.UsuarioInclusao = token.ID;
-                dbContext.Bancos.Add(entidade);
+                dbContext.Agencias.Add(entidade);
                 dbContext.SaveChanges();
                 return entidade;
             }
             catch (DbUpdateException ex)
             {
-                throw new RegistroInsertException(string.Format("Banco já cadastrado com o codigo {0}", entidade.Codigo), ex);
+                throw new RegistroInsertException(string.Format("Agência já cadastrado com o número para este banco {0}", entidade.Numero), ex);
             }
             catch (DbEntityValidationException ex)
             {
@@ -88,9 +89,9 @@ namespace ControleOrcamentoAPI.DAO
                 throw new ArgumentException("Não informado o ID para deleção");
             try
             {
-                var entidadeLocalizada = dbContext.Bancos.Where(data => data.ID == id).FirstOrDefault();
+                var entidadeLocalizada = dbContext.Agencias.Where(data => data.ID == id).FirstOrDefault();
                 if (entidadeLocalizada == null)
-                    throw new RegistroNaoEncontradoException("Banco não localizado.");
+                    throw new RegistroNaoEncontradoException("Agência não localizada.");
                 entidadeLocalizada.DataCancelamento = DateTime.Now;
                 entidadeLocalizada.UsuarioCancelamento = token.ID;
                 dbContext.SaveChanges();
@@ -101,20 +102,22 @@ namespace ControleOrcamentoAPI.DAO
             }
         }
 
-        public IList<Banco> ListarPorEntidade(Banco entidade)
+        public IList<Agencia> ListarPorEntidade(Agencia entidade)
         {
             query = from queryFiltro
-                      in dbContext.Bancos.AsNoTracking()
+                      in dbContext.Agencias.AsNoTracking()
                     where queryFiltro.DataCancelamento == null
                     select queryFiltro;
             query = AdicionarFiltrosComuns(entidade);
-            if (!string.IsNullOrWhiteSpace(entidade.Codigo))
-                query = from filtro in query where filtro.Codigo.Equals(entidade.Codigo, StringComparison.InvariantCultureIgnoreCase) select filtro;
-            if (!string.IsNullOrWhiteSpace(entidade.Nome))
-                query = from filtro in query where filtro.Nome.Equals(entidade.Nome, StringComparison.InvariantCultureIgnoreCase) select filtro;
-            var result = query.ToArray().OrderBy(p => p.Nome).ToArray();
+            if (!string.IsNullOrWhiteSpace(entidade.Numero))
+                query = from filtro in query where filtro.Numero.Equals(entidade.Numero, StringComparison.InvariantCultureIgnoreCase) select filtro;
+            if (!string.IsNullOrWhiteSpace(entidade.DV))
+                query = from filtro in query where filtro.DV.Equals(entidade.DV, StringComparison.InvariantCultureIgnoreCase) select filtro;
+            if (entidade.BancoID > 0)
+                query = from filtro in query where filtro.BancoID == entidade.BancoID select filtro;
+            var result = query.ToArray().OrderBy(p => p.Numero).ToArray();
             if (result == null)
-                throw new RegistroNaoEncontradoException("Banco não localizado.");
+                throw new RegistroNaoEncontradoException("Agência não localizada.");
             return result;
         }
 

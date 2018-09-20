@@ -4,7 +4,7 @@ namespace ControleOrcamentoAPI.Exceptions
 {
     public class RegistroUpdateException : Exception
     {
-        public RegistroUpdateException() : this("Usuário não atualizado.")
+        public RegistroUpdateException() : this("Registro não atualizado.")
         {
 
         }

@@ -7,14 +7,14 @@ using ControleOrcamentoAPI.Orquestrador;
 
 namespace ControleOrcamentoAPI.Controllers
 {
-    [RoutePrefix("api/banco")]
-    public class BancoController : BaseController
+    [RoutePrefix("api/agencia")]
+    public class AgenciaController : BaseController
     {
-        private static BancoOrquestrador _orquestrador;
+        private static AgenciaOrquestrador _orquestrador;
 
-        static BancoController()
+        static AgenciaController()
         {
-            _orquestrador = new BancoOrquestrador();
+            _orquestrador = new AgenciaOrquestrador();
         }
 
         [Authorize(Roles = "ADMIN, USER")]
@@ -31,7 +31,7 @@ namespace ControleOrcamentoAPI.Controllers
         }
 
         [Authorize(Roles = "ADMIN, USER")]
-        public HttpResponseMessage Get([FromUri]Banco entidade)
+        public HttpResponseMessage Get([FromUri]Agencia entidade)
         {
             try
             {
@@ -44,7 +44,7 @@ namespace ControleOrcamentoAPI.Controllers
         }
 
         [Authorize(Roles = "ADMIN")]
-        public HttpResponseMessage Post([FromBody]Banco entidade)
+        public HttpResponseMessage Post([FromBody]Agencia entidade)
         {
             try
             {
@@ -57,7 +57,7 @@ namespace ControleOrcamentoAPI.Controllers
         }
 
         [Authorize(Roles = "ADMIN")]
-        public HttpResponseMessage Put([FromBody]Banco entidade)
+        public HttpResponseMessage Put([FromBody]Agencia entidade)
         {
             try
             {

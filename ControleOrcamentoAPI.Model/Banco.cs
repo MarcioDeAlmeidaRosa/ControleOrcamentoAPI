@@ -13,8 +13,8 @@ namespace ControleOrcamentoAPI.Models
         /// Propriedade <see cref="Codigo"/> responsável por armazenar o código do banco na aplicação
         /// </summary>
         [Column("CODIGO", TypeName = "varchar")]
-        [StringLength(10)]
-        [Required]
+        [StringLength(10, ErrorMessage = "{0} pode conter no máximo {1} caracteres.")]
+        [Required(ErrorMessage = "Campo {0} é obrigatório.")]
         [ConcurrencyCheck]
         public string Codigo { get; set; }
 
@@ -22,8 +22,8 @@ namespace ControleOrcamentoAPI.Models
         /// Propriedade <see cref="Nome"/> responsável por armazenar o nome do banco na aplicação
         /// </summary>
         [Column("NOME", TypeName = "varchar")]
-        [StringLength(100)]
-        [Required]
+        [StringLength(100, ErrorMessage = "{0} pode conter no máximo {1} caracteres.")]
+        [Required(ErrorMessage = "Campo {0} é obrigatório.")]
         public string Nome { get; set; }
     }
 }

@@ -67,5 +67,6 @@ namespace ControleOrcamentoAPI.DataAccess
 
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Banco> Bancos { get; set; }
+        public DbSet<Agencia> Agencias { get; set; }
     }
 }

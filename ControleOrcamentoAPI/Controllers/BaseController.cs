@@ -31,7 +31,11 @@ namespace ControleOrcamentoAPI.Controllers
                 case "ControleOrcamentoAPI.Exceptions.RegistroDuplicadoException":
                     return Request.CreateResponse(HttpStatusCode.Ambiguous, new HttpError(ex.Message));
                 case "ControleOrcamentoAPI.Exceptions.RegistroUpdateException":
-                    return Request.CreateResponse(HttpStatusCode.NoContent, new HttpError(ex.Message));
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, new HttpError(ex.Message));
+                case "ControleOrcamentoAPI.Exceptions.RegistroInsertException":
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, new HttpError(ex.Message));
+                case "System.ArgumentException":
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, new HttpError(ex.Message));
                 default:
                     return Request.CreateResponse(HttpStatusCode.InternalServerError, new HttpError("Erro interno do servidor"));
             }

@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthOrquestrador.cs" />
+    <Compile Include="AgenciaOrquestrador.cs" />
     <Compile Include="BancoOrquestrador.cs" />
     <Compile Include="IOrquestrador.cs" />
     <Compile Include="Orquestrador.cs" />

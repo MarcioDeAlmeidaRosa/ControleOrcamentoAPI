@@ -11,8 +11,14 @@ using System.Data.Entity.Validation;
 
 namespace ControleOrcamentoAPI.DAO
 {
+    /// <summary>
+    /// Classe responsável por manter os dados do banco
+    /// </summary>
     public class BancoDAO : DAO<Banco>, IDAO<Banco>
     {
+        /// <summary>
+        /// Construtor estático responsável pelo mapeamento das classes
+        /// </summary>
         static BancoDAO()
         {
             Mapper.Initialize(cfg =>
@@ -21,6 +27,12 @@ namespace ControleOrcamentoAPI.DAO
             });
         }
 
+        /// <summary>
+        /// Método resposnável por atualizar o registro na entidade informada de banco
+        /// </summary>
+        /// <param name="entidade">Entidade banco contendo as informações que serão atualizadas no banco de dados</param>
+        /// <param name="token">Usuário logado na aplicação</param>
+        /// <returns>Entidade banco atualizada no banco de dados</returns>
         public Banco Atualizar(Banco entidade, UsuarioAutenticado token)
         {
             if (entidade == null)
@@ -48,6 +60,11 @@ namespace ControleOrcamentoAPI.DAO
             }
         }
 
+        /// <summary>
+        /// Método método resposnável por pesquisar dados por ID do banco
+        /// </summary>
+        /// <param name="id">Chave primária do registro do banco</param>
+        /// <returns>Entidade Banco encontrada no banco de dados pelo ID informado</returns>
         public Banco BuscarPorID(long id)
         {
             if (id <= 0)
@@ -58,6 +75,12 @@ namespace ControleOrcamentoAPI.DAO
             return entidadeLocalizada;
         }
 
+        /// <summary>
+        /// Método resposnável por incluir novo registro na entidade informada de banco
+        /// </summary>
+        /// <param name="entidade">Entidade contendo as informações que serão inseridas no banco de dados de banco</param>
+        /// <param name="token">Usuário logado na aplicação</param>
+        /// <returns>Entidade banco incluída no banco de dados pelo ID informado</returns>
         public Banco Criar(Banco entidade, UsuarioAutenticado token)
         {
             if (entidade == null)
@@ -82,6 +105,11 @@ namespace ControleOrcamentoAPI.DAO
             }
         }
 
+        /// <summary>
+        /// Método resposnável por excluir logicamente o registro informado de banco
+        /// </summary>
+        /// <param name="id">Chave primária do registro de banco no banco de dados</param>
+        /// <param name="token">Usuário logado na aplicação</param>
         public void Deletar(long id, UsuarioAutenticado token)
         {
             if (id <= 0)
@@ -101,6 +129,11 @@ namespace ControleOrcamentoAPI.DAO
             }
         }
 
+        /// <summary>
+        /// Método resposnável por pesquisar banco dados pelos filtros passados
+        /// </summary>
+        /// <param name="entidade">Entidade agência contedo os filtros que serão considerados no banco</param>
+        /// <returns>Lista dos registros de bancos encontrados no banco de dados pelo filtro infomado</returns>
         public IList<Banco> ListarPorEntidade(Banco entidade)
         {
             query = from queryFiltro

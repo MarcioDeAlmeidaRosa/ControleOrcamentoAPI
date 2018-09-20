@@ -11,8 +11,14 @@ using System.Data.Entity.Validation;
 
 namespace ControleOrcamentoAPI.DAO
 {
+    /// <summary>
+    /// Classe responsável por manter os dados da agência
+    /// </summary>
     public class AgenciaDAO : DAO<Agencia>, IDAO<Agencia>
     {
+        /// <summary>
+        /// Construtor estático responsável pelo mapeamento das classes
+        /// </summary>
         static AgenciaDAO()
         {
             Mapper.Initialize(cfg =>
@@ -21,6 +27,12 @@ namespace ControleOrcamentoAPI.DAO
             });
         }
 
+        /// <summary>
+        /// Método resposnável por atualizar o registro na entidade informada de agência
+        /// </summary>
+        /// <param name="entidade">Entidade agência contendo as informações que serão atualizadas no banco de dados</param>
+        /// <param name="token">Usuário logado na aplicação</param>
+        /// <returns>Entidade agência atualizada no banco de dados</returns>
         public Agencia Atualizar(Agencia entidade, UsuarioAutenticado token)
         {
             if (entidade == null)
@@ -48,6 +60,11 @@ namespace ControleOrcamentoAPI.DAO
             }
         }
 
+        /// <summary>
+        /// Método método resposnável por pesquisar dados por ID da agência
+        /// </summary>
+        /// <param name="id">Chave primária do registro da agência</param>
+        /// <returns>Entidade Agência encontrada no banco de dados pelo ID informado</returns>
         public Agencia BuscarPorID(long id)
         {
             if (id <= 0)
@@ -59,6 +76,12 @@ namespace ControleOrcamentoAPI.DAO
             return entidadeLocalizada;
         }
 
+        /// <summary>
+        /// Método resposnável por incluir novo registro na entidade informada de agência
+        /// </summary>
+        /// <param name="entidade">Entidade contendo as informações que serão inseridas no banco de dados de agência</param>
+        /// <param name="token">Usuário logado na aplicação</param>
+        /// <returns>Entidade agência incluída no banco de dados pelo ID informado</returns>
         public Agencia Criar(Agencia entidade, UsuarioAutenticado token)
         {
             if (entidade == null)
@@ -83,6 +106,11 @@ namespace ControleOrcamentoAPI.DAO
             }
         }
 
+        /// <summary>
+        /// Método resposnável por excluir logicamente o registro informado de agência
+        /// </summary>
+        /// <param name="id">Chave primária do registro de agência no banco de dados</param>
+        /// <param name="token">Usuário logado na aplicação</param>
         public void Deletar(long id, UsuarioAutenticado token)
         {
             if (id <= 0)
@@ -102,6 +130,11 @@ namespace ControleOrcamentoAPI.DAO
             }
         }
 
+        /// <summary>
+        /// Método resposnável por pesquisar agência dados pelos filtros passados
+        /// </summary>
+        /// <param name="entidade">Entidade agência contedo os filtros que serão considerados na consulta</param>
+        /// <returns>Lista dos registros de agência encontrados no banco de dados pelo filtro infomado</returns>
         public IList<Agencia> ListarPorEntidade(Agencia entidade)
         {
             query = from queryFiltro

@@ -11,10 +11,16 @@ using ControleOrcamentoAPI.Criptografia;
 
 namespace ControleOrcamentoAPI.DAO
 {
+    /// <summary>
+    /// Classe responsável por manter dados pásico de usuário
+    /// </summary>
     public class AuthDAO : DAO<Usuario>
     {
         private static int _LengthSalt = 0;
 
+        /// <summary>
+        /// Construtor static inicializando variáveis que não serão alteradas enquanto o serviço esta rodando
+        /// </summary>
         static AuthDAO()
         {
             try
@@ -28,6 +34,12 @@ namespace ControleOrcamentoAPI.DAO
             }
         }
 
+        /// <summary>
+        /// Método responsável por efetuar o login do usuário na aplicação
+        /// </summary>
+        /// <param name="login">Usuário de autenticação</param>
+        /// <param name="senha">Senha do usuário para autenticação</param>
+        /// <returns>Informações básicas para autenticar o usuário</returns>
         public UsuarioAutenticado Login(string login, string senha)
         {
             var entidadeLocalizada = dbContext.Usuarios.Where(data => data.Login.Equals(login, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
@@ -57,6 +69,10 @@ namespace ControleOrcamentoAPI.DAO
             };
         }
 
+        /// <summary>
+        /// Método responsável por efetuar o registro de novos usuários na aplicação
+        /// </summary>
+        /// <param name="entidade">Entidade contendo informações do novo usuário à ser registrado</param>
         public void Registrar(Usuario entidade)
         {
             try
@@ -89,6 +105,11 @@ namespace ControleOrcamentoAPI.DAO
             }
         }
 
+        /// <summary>
+        /// Método responsável por efetuar a validação do token gerado
+        /// </summary>
+        /// <param name="token">Usuário logado na aplicação</param>
+        /// <returns></returns>
         public UsuarioAutenticado ValidaToken(UsuarioAutenticado token)
         {
             throw new System.NotImplementedException();

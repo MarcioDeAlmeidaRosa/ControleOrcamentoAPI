@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="RegistroInsertException.cs" />
+    <Compile Include="RegistroDeleteException.cs" />
     <Compile Include="UsuarioBloqueadoException.cs" />
     <Compile Include="RegistroNaoEncontradoException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

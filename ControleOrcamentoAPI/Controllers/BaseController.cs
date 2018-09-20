@@ -34,6 +34,8 @@ namespace ControleOrcamentoAPI.Controllers
                     return Request.CreateResponse(HttpStatusCode.BadRequest, new HttpError(ex.Message));
                 case "ControleOrcamentoAPI.Exceptions.RegistroInsertException":
                     return Request.CreateResponse(HttpStatusCode.BadRequest, new HttpError(ex.Message));
+                case "ControleOrcamentoAPI.Exceptions.RegistroDeleteException":
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, new HttpError(ex.Message));
                 case "System.ArgumentException":
                     return Request.CreateResponse(HttpStatusCode.BadRequest, new HttpError(ex.Message));
                 default:

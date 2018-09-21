@@ -5,10 +5,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace ControleOrcamentoAPI.Models
 {
     /// <summary>
-    /// Classe responsável por definir os atributos de um usuário da aplicação
+    /// Responsável por definir os atributos de um usuário da aplicação
     /// </summary>
     [Table("USUARIO")]
-    public class Usuario : Entity
+    public partial class Usuario : Entity, IComparable
     {
         /// <summary>
         /// Propriedade <see cref="Nome"/> responsável por armazenar o primeiro nome do usuário na aplicação
@@ -84,7 +84,7 @@ namespace ControleOrcamentoAPI.Models
         [Column("BLOQUEADO", TypeName = "bit")]
         [Required(ErrorMessage = "Campo {0} é obrigatório.")]
         public bool Bloqueado { get; set; }
-       
+
         /// <summary>
         /// Propriedade que define a data de bloquei do usuário na aplicação
         /// </summary>
@@ -96,5 +96,17 @@ namespace ControleOrcamentoAPI.Models
         /// </summary>
         [Column("USUARIO_BLOQUEIO", TypeName = "bigint")]
         public long UsuarioBloqueio { get; set; }
+
+        /// <summary>
+        /// Definindo ordenação principal da classe
+        /// </summary>
+        /// <param name="obj">Objeto à ser comparado ordenação</param>
+        /// <returns>Valor negativo quando a instãncia é menor, 0 quando for igual e 1 quando a instância for maior que o objeto comparado</returns>
+        public int CompareTo(object obj)
+        {
+            if (!(obj is Usuario outroObj))
+                return -1;
+            return Nome.CompareTo(outroObj.Nome);
+        }
     }
 }

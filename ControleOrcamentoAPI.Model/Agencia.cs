@@ -1,13 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ControleOrcamentoAPI.Models
 {
     /// <summary>
-    /// Classe responsável por definir os atributos de uma agência na aplicação
+    /// Responsável por definir os atributos de uma agência na aplicação
     /// </summary>
     [Table("AGENCIA")]
-    public class Agencia: Entity
+    public partial class Agencia : Entity, IComparable
     {
         /// <summary>
         /// Propriedade <see cref="BancoID"/> responsável por armazenar o ID banco da agência na aplicação
@@ -35,5 +36,17 @@ namespace ControleOrcamentoAPI.Models
         [Column("DV", TypeName = "varchar")]
         [StringLength(1, ErrorMessage = "{0} poode conter no máximo {1} caracteres.")]
         public string DV { get; set; }
+
+        /// <summary>
+        /// Definindo ordenação principal da classe
+        /// </summary>
+        /// <param name="obj">Objeto à ser comparado ordenação</param>
+        /// <returns>Valor negativo quando a instãncia é menor, 0 quando for igual e 1 quando a instância for maior que o objeto comparado</returns>
+        public int CompareTo(object obj)
+        {
+            if (!(obj is Agencia outroObj))
+                return -1;
+            return Numero.CompareTo(outroObj.Numero);
+        }
     }
 }

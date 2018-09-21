@@ -1,9 +1,9 @@
 ﻿namespace ControleOrcamentoAPI.Models
 {
     /// <summary>
-    /// Classe responsável por definir os atributos de um usuário logado na aplicação
+    /// Responsável por definir os atributos de um usuário logado na aplicação
     /// </summary>
-    public class UsuarioAutenticado : Entity
+    public partial class UsuarioAutenticado : Entity
     {
         /// <summary>
         /// Propriedade <see cref="Nome"/> responsável por armazenar o nome do usuário logado na aplicação

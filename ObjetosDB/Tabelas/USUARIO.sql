@@ -34,17 +34,19 @@ CREATE TABLE [dbo].[USUARIO](
 	[SALT] [varchar](max) NOT NULL,
 	
 	[BLOQUEADO] [bit] NULL,
-	[DATA_BLOQUEIO] [date] NULL,
+	[DATA_BLOQUEIO] [datetime] NULL,
 	[USUARIO_BLOQUEIO] [bigint] NULL,
 	
 	[USUARIO_INCLUSAO] [bigint] NULL,
-	[DATA_INCLUSAO] [date] NOT NULL,
+	[DATA_INCLUSAO] [datetime] NOT NULL,
 	
 	[USUARIO_ALTERACAO] [bigint] NULL,
-	[DATA_ALTERACAO] [date] NULL,
+	[DATA_ALTERACAO] [datetime] NULL,
 	
 	[USUARIO_CANCELAMENTO] [bigint] NULL,
-	[DATA_CANCELAMENTO] [date] NULL,
+	[DATA_CANCELAMENTO] [datetime] NULL,
+	
+	[TIMEZONE] [varchar](max) NULL,
 UNIQUE NONCLUSTERED 
 (
 	[LOGIN] ASC

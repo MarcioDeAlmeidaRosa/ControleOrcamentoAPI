@@ -6,17 +6,17 @@ namespace ControleOrcamentoAPI.Orquestrador
 {
     public class BancoOrquestrador : Orquestrador, IOrquestrador<Banco>
     {
-        public Banco Atualizar(Banco entidade, UsuarioAutenticado token)
+        public Banco Atualizar(long id, Banco entidade, UsuarioAutenticado token)
         {
-            using (var dao = new BancoDAO())
+            using (var dao = new BancoDAO(token))
             {
-                return dao.Atualizar(entidade, token);
+                return dao.Atualizar(id, entidade);
             }
         }
 
-        public Banco BuscarPorID(long id)
+        public Banco BuscarPorID(long id, UsuarioAutenticado token)
         {
-            using (var dao = new BancoDAO())
+            using (var dao = new BancoDAO(token))
             {
                 return dao.BuscarPorID(id);
             }
@@ -24,23 +24,23 @@ namespace ControleOrcamentoAPI.Orquestrador
 
         public Banco Criar(Banco entidade, UsuarioAutenticado token)
         {
-            using (var dao = new BancoDAO())
+            using (var dao = new BancoDAO(token))
             {
-                return dao.Criar(entidade, token);
+                return dao.Criar(entidade);
             }
         }
 
         public void Deletar(long id, UsuarioAutenticado token)
         {
-            using (var dao = new BancoDAO())
+            using (var dao = new BancoDAO(token))
             {
-                dao.Deletar(id, token);
+                dao.Deletar(id);
             }
         }
 
-        public IList<Banco> ListarPorEntidade(Banco entidade)
+        public IList<Banco> ListarPorEntidade(Banco entidade, UsuarioAutenticado token)
         {
-            using (var dao = new BancoDAO())
+            using (var dao = new BancoDAO(token))
             {
                 return dao.ListarPorEntidade(entidade);
             }

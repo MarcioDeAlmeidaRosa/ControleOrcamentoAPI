@@ -47,7 +47,7 @@ namespace ControleOrcamentoAPI
                     //RequiresVerification = 2,
                     context.SetError("2", ex.Message);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     context.SetError("3", "Usuário não autenticado");
                 }

@@ -69,7 +69,7 @@ namespace ControleOrcamentoAPI.Models
         /// </summary>
         [Column("VERIFICADO", TypeName = "bit")]
         [Required(ErrorMessage = "Campo {0} é obrigatório.")]
-        public bool Verificado { get; set; }
+        public bool? Verificado { get; set; }
 
         /// <summary>
         /// Propriedade <see cref="Salt"/> responsável por armazenar o Salt da senha do usuário na aplicação
@@ -83,7 +83,7 @@ namespace ControleOrcamentoAPI.Models
         /// </summary>
         [Column("BLOQUEADO", TypeName = "bit")]
         [Required(ErrorMessage = "Campo {0} é obrigatório.")]
-        public bool Bloqueado { get; set; }
+        public bool? Bloqueado { get; set; }
 
         /// <summary>
         /// Propriedade que define a data de bloquei do usuário na aplicação
@@ -95,7 +95,14 @@ namespace ControleOrcamentoAPI.Models
         /// Propriedade <see cref="UsuarioBloqueio"/> que define o usuário que bloqueou o usuário na aplicação
         /// </summary>
         [Column("USUARIO_BLOQUEIO", TypeName = "bigint")]
-        public long UsuarioBloqueio { get; set; }
+        public long? UsuarioBloqueio { get; set; }
+
+        /// <summary>
+        /// Propriedade <see cref="TimeZone"/> responsável por armazenar o timezone do usuário na aplicação
+        /// </summary>
+        [Column("TIMEZONE", TypeName = "varchar")]
+        [StringLength(4000, ErrorMessage = "{0} poode conter no máximo {1} caracteres.")]
+        public string TimeZone { get; set; }
 
         /// <summary>
         /// Definindo ordenação principal da classe

@@ -6,17 +6,17 @@ namespace ControleOrcamentoAPI.Orquestrador
 {
     public class AgenciaOrquestrador : Orquestrador, IOrquestrador<Agencia>
     {
-        public Agencia Atualizar(Agencia entidade, UsuarioAutenticado token)
+        public Agencia Atualizar(long id, Agencia entidade, UsuarioAutenticado token)
         {
-            using (var dao = new AgenciaDAO())
+            using (var dao = new AgenciaDAO(token))
             {
-                return dao.Atualizar(entidade, token);
+                return dao.Atualizar(id, entidade);
             }
         }
 
-        public Agencia BuscarPorID(long id)
+        public Agencia BuscarPorID(long id, UsuarioAutenticado token)
         {
-            using (var dao = new AgenciaDAO())
+            using (var dao = new AgenciaDAO(token))
             {
                 return dao.BuscarPorID(id);
             }
@@ -24,23 +24,23 @@ namespace ControleOrcamentoAPI.Orquestrador
 
         public Agencia Criar(Agencia entidade, UsuarioAutenticado token)
         {
-            using (var dao = new AgenciaDAO())
+            using (var dao = new AgenciaDAO(token))
             {
-                return dao.Criar(entidade, token);
+                return dao.Criar(entidade);
             }
         }
 
         public void Deletar(long id, UsuarioAutenticado token)
         {
-            using (var dao = new AgenciaDAO())
+            using (var dao = new AgenciaDAO(token))
             {
-                dao.Deletar(id, token);
+                dao.Deletar(id);
             }
         }
 
-        public IList<Agencia> ListarPorEntidade(Agencia entidade)
+        public IList<Agencia> ListarPorEntidade(Agencia entidade, UsuarioAutenticado token)
         {
-            using (var dao = new AgenciaDAO())
+            using (var dao = new AgenciaDAO(token))
             {
                 return dao.ListarPorEntidade(entidade);
             }

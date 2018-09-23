@@ -19,5 +19,10 @@
         /// Propriedade <see cref="Claim"/> responsável por armazenar a regra do usuário logado na aplicação
         /// </summary>
         public string Claim { get; set; }
+
+        /// <summary>
+        /// Propriedade <see cref="TimeZone"/> responsável por armazenar o timezone do usuário na aplicação
+        /// </summary>
+        public string TimeZone { get; set; }
     }
 }

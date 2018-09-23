@@ -23,5 +23,19 @@ namespace ControleOrcamentoAPI.Extensoes
                 throw new ArgumentException("Não enviado a ista de item", nameof(itens));
             itens.ToList().ForEach(e => lista.Add(e));
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="lista"></param>
+        /// <param name="funcao"></param>
+        /// <returns></returns>
+        public static IEnumerable<T> ExecutaFuncao<T>(this IEnumerable<T> lista, Func<T, T> funcao)
+        {
+            var retorno = new List<T>();
+            lista.ToList().ForEach(item => retorno.Add(funcao(item)));
+            return retorno.ToArray();
+        }
     }
 }

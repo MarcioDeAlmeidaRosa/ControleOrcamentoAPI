@@ -3,20 +3,22 @@ using System.Linq;
 using System.Data;
 using System.Text;
 using System.Configuration;
+using ControleOrcamentoAPI.Utils;
 using ControleOrcamentoAPI.Models;
 using System.Data.Entity.Validation;
-using ControleOrcamentoAPI.Exceptions;
 using System.Web.Script.Serialization;
+using ControleOrcamentoAPI.Extensoes;
+using ControleOrcamentoAPI.Exceptions;
 using ControleOrcamentoAPI.Criptografia;
 
 namespace ControleOrcamentoAPI.DAO
 {
     /// <summary>
-    /// Classe responsável por manter dados pásico de usuário
+    /// Responsável pela parte de autenticação de usuário na aplicação
     /// </summary>
     public class AuthDAO : DAO<Usuario>
     {
-        private static int _LengthSalt = 0;
+        private static readonly int _LengthSalt = 0;
 
         /// <summary>
         /// Construtor static inicializando variáveis que não serão alteradas enquanto o serviço esta rodando
@@ -35,14 +37,14 @@ namespace ControleOrcamentoAPI.DAO
         }
 
         /// <summary>
-        /// Método responsável por efetuar o login do usuário na aplicação
+        /// Responsável por efetuar o login do usuário na aplicação
         /// </summary>
-        /// <param name="login">Usuário de autenticação</param>
-        /// <param name="senha">Senha do usuário para autenticação</param>
+        /// <param name="login"> Usuário de autenticação</param>
+        /// <param name="senha"> Senha do usuário para autenticação</param>
         /// <returns>Informações básicas para autenticar o usuário</returns>
         public UsuarioAutenticado Login(string login, string senha)
         {
-            var entidadeLocalizada = dbContext.Usuarios.Where(data => data.Login.Equals(login, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
+            var entidadeLocalizada = _dbContext.Usuarios.Where(data => data.Login.Equals(login, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
 
             if (entidadeLocalizada == null)
                 throw new RegistroNaoEncontradoException("Usuário não localizado.");
@@ -54,10 +56,10 @@ namespace ControleOrcamentoAPI.DAO
             if (entidadeLocalizada.Senha != _Salt.getPassword(_senha))
                 throw new RegistroNaoEncontradoException("Usuário não localizado.");
 
-            if (!entidadeLocalizada.Verificado)
+            if ((!entidadeLocalizada.Verificado.HasValue) && (!entidadeLocalizada.Verificado.Value))
                 throw new UsuarioNaoVerificadoException("Usuário não verificado.");
 
-            if (entidadeLocalizada.Bloqueado)
+            if ((entidadeLocalizada.Bloqueado.HasValue) && (entidadeLocalizada.Bloqueado.Value))
                 throw new UsuarioBloqueadoException("Usuário bloqueado.");
 
             return new UsuarioAutenticado()
@@ -65,19 +67,20 @@ namespace ControleOrcamentoAPI.DAO
                 ID = entidadeLocalizada.ID,
                 Nome = entidadeLocalizada.Nome,
                 Email = entidadeLocalizada.Email,
-                Claim = entidadeLocalizada.Claim
+                Claim = entidadeLocalizada.Claim,
+                TimeZone = entidadeLocalizada.TimeZone
             };
         }
 
         /// <summary>
-        /// Método responsável por efetuar o registro de novos usuários na aplicação
+        /// Responsável por efetuar o registro de novos usuários na aplicação
         /// </summary>
-        /// <param name="entidade">Entidade contendo informações do novo usuário à ser registrado</param>
+        /// <param name="entidade"> Entidade contendo informações do novo usuário à ser registrado</param>
         public void Registrar(Usuario entidade)
         {
             try
             {
-                var entidadeLocalizada = dbContext.Usuarios.Where(data => data.Login.Equals(entidade.Login, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
+                var entidadeLocalizada = _dbContext.Usuarios.Where(data => data.Login.Equals(entidade.Login, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
                 if (entidadeLocalizada != null)
                     throw new RegistroDuplicadoException("Usuário já existe na aplicação");
 
@@ -90,11 +93,16 @@ namespace ControleOrcamentoAPI.DAO
                 entidade.Senha = _Salt.getPassword(result);
                 entidade.Salt = SerializeSalt;
                 entidade.Claim = "USER";
+                if (string.IsNullOrWhiteSpace(entidade.TimeZone) && (HelpTimeZone.IsIDUTCValid(entidade.TimeZone)))
+                    entidade.TimeZone = HelpTimeZone.RecuperarIDTimeZonePadrao();
                 entidade.Bloqueado = true;
-                entidade.DataBloqueio = DateTime.Now;
+                entidade.DataInclusao = DateTime.UtcNow;
+                entidade.DataBloqueio = DateTime.UtcNow;
                 entidade.Verificado = false;
-                dbContext.Usuarios.Add(entidade);
-                dbContext.SaveChanges();
+                _dbContext.Usuarios.Add(entidade);
+                _dbContext.SaveChanges();
+                entidade.UsuarioInclusao = entidade.ID;
+                _dbContext.SaveChanges();
             }
             catch (DbEntityValidationException ex)
             {
@@ -106,13 +114,18 @@ namespace ControleOrcamentoAPI.DAO
         }
 
         /// <summary>
-        /// Método responsável por efetuar a validação do token gerado
+        /// Responsável por efetuar a validação do token gerado
         /// </summary>
-        /// <param name="token">Usuário logado na aplicação</param>
-        /// <returns></returns>
+        /// <param name="token"> Usuário logado na aplicação</param>
+        /// <returns>Informações básicas para autenticar o usuário</returns>
         public UsuarioAutenticado ValidaToken(UsuarioAutenticado token)
         {
             throw new System.NotImplementedException();
+        }
+
+        protected override void Configurar()
+        {
+            //TODO: REMOVER
         }
     }
 }

@@ -22,7 +22,7 @@ namespace ControleOrcamentoAPI.Controllers
         {
             try
             {
-                return Request.CreateResponse(HttpStatusCode.OK, _orquestrador.BuscarPorID(id));
+                return Request.CreateResponse(HttpStatusCode.OK, _orquestrador.BuscarPorID(id, User));
             }
             catch (Exception ex)
             {
@@ -35,7 +35,7 @@ namespace ControleOrcamentoAPI.Controllers
         {
             try
             {
-                return Request.CreateResponse(HttpStatusCode.OK, _orquestrador.ListarPorEntidade(entidade));
+                return Request.CreateResponse(HttpStatusCode.OK, _orquestrador.ListarPorEntidade(entidade, User));
             }
             catch (Exception ex)
             {
@@ -57,11 +57,11 @@ namespace ControleOrcamentoAPI.Controllers
         }
 
         [Authorize(Roles = "ADMIN")]
-        public HttpResponseMessage Put([FromBody]Banco entidade)
+        public HttpResponseMessage Put(long id, [FromBody]Banco entidade)
         {
             try
             {
-                return Request.CreateResponse(HttpStatusCode.Accepted, _orquestrador.Atualizar(entidade, User));
+                return Request.CreateResponse(HttpStatusCode.Accepted, _orquestrador.Atualizar(id, entidade, User));
             }
             catch (Exception ex)
             {

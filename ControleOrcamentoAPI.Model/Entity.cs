@@ -25,7 +25,7 @@ namespace ControleOrcamentoAPI.Models
         /// <summary>
         /// Propriedade <see cref="ID"/> que define a data de inclusão do registro na aplicação
         /// </summary>
-        [Column("DATA_INCLUSAO", TypeName = "date")]
+        [Column("DATA_INCLUSAO", TypeName = "datetime")]
         [Required]
         public DateTime? DataInclusao { get; set; }
 
@@ -38,7 +38,7 @@ namespace ControleOrcamentoAPI.Models
         /// <summary>
         /// Propriedade <see cref="DataAlteracao"/> que define a data de alteração do registro na aplicação
         /// </summary>
-        [Column("DATA_ALTERACAO", TypeName = "date")]
+        [Column("DATA_ALTERACAO", TypeName = "datetime")]
         public DateTime? DataAlteracao { get; set; }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace ControleOrcamentoAPI.Models
         /// <summary>
         /// Propriedade <see cref="DataCancelamento"/> que define a data de cancelamento do registro na aplicação
         /// </summary>
-        [Column("DATA_CANCELAMENTO", TypeName = "date")]
+        [Column("DATA_CANCELAMENTO", TypeName = "datetime")]
         public DateTime? DataCancelamento { get; set; }
     }
 }

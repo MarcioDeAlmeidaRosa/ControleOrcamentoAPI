@@ -23,6 +23,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControleOrcamentoAPI.Extens
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControleOrcamentoAPI.Models.Comparadores", "ControleOrcamentoAPI.Models.Comparators\ControleOrcamentoAPI.Models.Comparadores.csproj", "{DDB4BCD4-AF83-48AC-88F1-EC739B3D08E6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControleOrcamentoAPI.Utils", "ControleOrcamentoAPI.Utils\ControleOrcamentoAPI.Utils.csproj", "{99D81597-4B7B-4018-BE71-0A0A46FFAD51}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControleOrcamentoAPI.Models.Mapper", "ControleOrcamentoAPI.Models.Mapper\ControleOrcamentoAPI.Models.Mapper.csproj", "{EAF730BB-F025-474F-9B9E-B900D27087C6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +73,14 @@ Global
 		{DDB4BCD4-AF83-48AC-88F1-EC739B3D08E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DDB4BCD4-AF83-48AC-88F1-EC739B3D08E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DDB4BCD4-AF83-48AC-88F1-EC739B3D08E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99D81597-4B7B-4018-BE71-0A0A46FFAD51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99D81597-4B7B-4018-BE71-0A0A46FFAD51}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99D81597-4B7B-4018-BE71-0A0A46FFAD51}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99D81597-4B7B-4018-BE71-0A0A46FFAD51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EAF730BB-F025-474F-9B9E-B900D27087C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAF730BB-F025-474F-9B9E-B900D27087C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAF730BB-F025-474F-9B9E-B900D27087C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAF730BB-F025-474F-9B9E-B900D27087C6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

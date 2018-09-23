@@ -5,55 +5,54 @@ using System.Text;
 using System.Data;
 using System.Collections.Generic;
 using ControleOrcamentoAPI.Models;
+using System.Data.Entity.Validation;
+using ControleOrcamentoAPI.Extensoes;
 using ControleOrcamentoAPI.Exceptions;
 using System.Data.Entity.Infrastructure;
-using System.Data.Entity.Validation;
 
 namespace ControleOrcamentoAPI.DAO
 {
     /// <summary>
-    /// Classe responsável por manter os dados da agência
+    /// Responsável por manter os dados da agência
     /// </summary>
     public class AgenciaDAO : DAO<Agencia>, IDAO<Agencia>
     {
         /// <summary>
-        /// Construtor estático responsável pelo mapeamento das classes
+        /// Responsável por instanciar o objeto
         /// </summary>
-        static AgenciaDAO()
-        {
-            Mapper.Initialize(cfg =>
-            {
-                cfg.CreateMap<Agencia, Agencia>().ForMember(m => m.ID, o => o.Ignore());
-            });
-        }
+        /// <param name="token"> Entidade agência contedo os filtros que serão considerados na consulta</param>
+        /// <exception cref="ArgumentNullException"> Excação lançada quando o <paramref name="token"/> é nulo</exception>
+        public AgenciaDAO(UsuarioAutenticado token) : base(token) { }
 
         /// <summary>
-        /// Método resposnável por atualizar o registro na entidade informada de agência
+        /// Resposnável por atualizar o registro na entidade
         /// </summary>
-        /// <param name="entidade">Entidade agência contendo as informações que serão atualizadas no banco de dados</param>
-        /// <param name="token">Usuário logado na aplicação</param>
-        /// <exception cref="ArgumentException">Excação lançada quando o <paramref name="entidade"/> da entidade e nula</exception>
-        /// <exception cref="RegistroNaoEncontradoException">Exception lançada quando não localizado o registro</exception>
-        /// <exception cref="RegistroUpdateException">Exception lançada quando acontece algum erro no momento de atualizar o registro</exception>
-        /// <returns>Entidade agência atualizada no banco de dados</returns>
-        public Agencia Atualizar(Agencia entidade, UsuarioAutenticado token)
+        /// <param name="id"> ID da entidade para efetuar atualização no banco de dados</param>
+        /// <param name="entidade"> Entidade contendo as informações que serão atualizadas no banco de dados</param>
+        /// <exception cref="ArgumentException"> Excação lançada quando o <paramref name="entidade"/> da entidade e nula</exception>
+        /// <exception cref="RegistroNaoEncontradoException"> Exception lançada quando não localizado o registro</exception>
+        /// <exception cref="RegistroUpdateException"> Exception lançada quando acontece algum erro no momento de atualizar o registro</exception>
+        /// <returns>Entidade atualizada no banco de dados</returns>
+        public Agencia Atualizar(long id, Agencia entidade)
         {
+            if (id <= 0)
+                throw new ArgumentException("Não informado o id para atualização");
             if (entidade == null)
                 throw new ArgumentException("Não informado a entidade para atualização");
             try
             {
-                var entidadeLocalizada = dbContext.Agencias.Where(data => data.ID == entidade.ID).FirstOrDefault();
+                var entidadeLocalizada = ListarPorEntidade(new Agencia() { ID = id }).FirstOrDefault();
                 if (entidadeLocalizada == null)
                     throw new RegistroNaoEncontradoException("Agência não localizada.");
                 Mapper.Map(entidade, entidadeLocalizada);
-                entidadeLocalizada.DataAlteracao = DateTime.Now;
-                entidadeLocalizada.UsuarioAlteracao = token.ID;
-                dbContext.SaveChanges();
-                return entidadeLocalizada;
+                entidadeLocalizada.DataAlteracao = DateTime.UtcNow;
+                entidadeLocalizada.UsuarioAlteracao = Token.ID;
+                _dbContext.SaveChanges();
+                return BuscarPorID(entidadeLocalizada.ID);
             }
             catch (DbUpdateException ex)
             {
-                throw new RegistroUpdateException(string.Format("Agência já cadastrado com o número para este banco {0}", entidade.Numero), ex);
+                throw new RegistroUpdateException(string.Format("Agência já cadastrada com o número para este banco {0}", entidade.Numero), ex);
             }
             catch (DbEntityValidationException ex)
             {
@@ -64,49 +63,44 @@ namespace ControleOrcamentoAPI.DAO
         }
 
         /// <summary>
-        /// Método método resposnável por pesquisar dados por ID da agência
+        /// Resposnável por pesquisar dados por ID
         /// </summary>
-        /// <param name="id">Chave primária do registro da agência</param>
-        /// <exception cref="ArgumentException">Excação lançada quando o <paramref name="id"/> da entidade e 0</exception>
-        /// <exception cref="RegistroNaoEncontradoException">Exception lançada quando não localizado o registro</exception>
-        /// <returns>Entidade Agência encontrada no banco de dados pelo ID informado</returns>
+        /// <param name="id"> ID da entidade para esquisa no banco de dados</param>
+        /// <exception cref="ArgumentException"> Excação lançada quando o <paramref name="id"/> da entidade e 0</exception>
+        /// <exception cref="RegistroNaoEncontradoException"> Exception lançada quando não localizado o registro</exception>
+        /// <returns>Entidade encontrada no banco de dados pelo ID informado</returns>
         public Agencia BuscarPorID(long id)
         {
             if (id <= 0)
                 throw new ArgumentException("Não informado o ID para pesquisar");
-
-            var entidadeLocalizada = dbContext.Agencias.Where(data => data.ID == id).FirstOrDefault();
+            var entidadeLocalizada = ListarPorEntidade(new Agencia() { ID = id }).FirstOrDefault();
             if (entidadeLocalizada == null)
                 throw new RegistroNaoEncontradoException("Agência não localizada.");
             return entidadeLocalizada;
         }
 
         /// <summary>
-        /// Método resposnável por incluir novo registro na entidade informada de agência
+        /// Resposnável por incluir novo registro na entidade na coleção
         /// </summary>
-        /// <param name="entidade">Entidade contendo as informações que serão inseridas no banco de dados de agência</param>
-        /// <param name="token">Usuário logado na aplicação</param>
-        /// <exception cref="ArgumentException">Excação lançada quando o <paramref name="entidade"/> da entidade e nula</exception>
-        /// <exception cref="ArgumentException">Excação lançada quando o <paramref name="token"/> da entidade e nula</exception>
-        /// <exception cref="RegistroInsertException">Exception lançada ocorre algúm problema na inclusão do registro</exception>
-        /// <returns>Entidade agência incluída no banco de dados pelo ID informado</returns>
-        public Agencia Criar(Agencia entidade, UsuarioAutenticado token)
+        /// <param name="entidade"> Entidade contendo as informações que serão inseridas no banco de dados</param>
+        /// <exception cref="ArgumentException"> Excação lançada quando o <paramref name="entidade"/> da entidade e nula</exception>
+        /// <exception cref="RegistroInsertException"> Exception lançada ocorre algúm problema na inclusão do registro</exception>
+        /// <returns>Entidade incluída no banco de dados</returns>
+        public Agencia Criar(Agencia entidade)
         {
             if (entidade == null)
                 throw new ArgumentException("Não informado a entidade para inclusão");
-            if (token == null)
-                throw new ArgumentException("Usuário não informado");
             try
             {
-                entidade.DataInclusao = DateTime.Now;
-                entidade.UsuarioInclusao = token.ID;
-                dbContext.Agencias.Add(entidade);
-                dbContext.SaveChanges();
-                return entidade;
+                entidade.DataInclusao = DateTime.UtcNow;
+                entidade.UsuarioInclusao = Token.ID;
+                _dbContext.Agencias.Add(entidade);
+                _dbContext.SaveChanges();
+                return BuscarPorID(entidade.ID);
             }
             catch (DbUpdateException ex)
             {
-                throw new RegistroInsertException(string.Format("Agência já cadastrado com o número para este banco {0}", entidade.Numero), ex);
+                throw new RegistroInsertException(string.Format("Agência já cadastrada com o número para este banco {0}", entidade.Numero), ex);
             }
             catch (DbEntityValidationException ex)
             {
@@ -117,27 +111,23 @@ namespace ControleOrcamentoAPI.DAO
         }
 
         /// <summary>
-        /// Método resposnável por excluir logicamente o registro informado de agência
+        /// Resposnável por excluir logicamente o registro informado
         /// </summary>
-        /// <param name="id">Chave primária do registro de agência no banco de dados</param>
-        /// <param name="token">Usuário logado na aplicação</param>
-        /// <exception cref="ArgumentException">Excação lançada quando o <paramref name="id"/> é menor igual a 0</exception>
-        /// <exception cref="ArgumentException">Excação lançada quando o <paramref name="token"/> da entidade e nula</exception>
-        /// <exception cref="RegistroDeleteException">Exception lançada ocorre algúm problema na exclusao do registro</exception>
-        public void Deletar(long id, UsuarioAutenticado token)
+        /// <param name="id"> Chave primária do registro no banco de dados</param>
+        /// <exception cref="ArgumentException"> Excação lançada quando o <paramref name="id"/> é menor igual a 0</exception>
+        /// <exception cref="RegistroDeleteException"> Exception lançada ocorre algúm problema na exclusao do registro</exception>
+        public void Deletar(long id)
         {
             if (id <= 0)
                 throw new ArgumentException("Não informado o ID para deleção");
-            if (token == null)
-                throw new ArgumentException("Usuário não informado");
             try
             {
-                var entidadeLocalizada = dbContext.Agencias.Where(data => data.ID == id).FirstOrDefault();
+                var entidadeLocalizada = ListarPorEntidade(new Agencia() { ID = id }).FirstOrDefault();
                 if (entidadeLocalizada == null)
                     throw new RegistroNaoEncontradoException("Agência não localizada.");
-                entidadeLocalizada.DataCancelamento = DateTime.Now;
-                entidadeLocalizada.UsuarioCancelamento = token.ID;
-                dbContext.SaveChanges();
+                entidadeLocalizada.DataCancelamento = DateTime.UtcNow;
+                entidadeLocalizada.UsuarioCancelamento = Token.ID;
+                _dbContext.SaveChanges();
             }
             catch (Exception ex)
             {
@@ -146,19 +136,18 @@ namespace ControleOrcamentoAPI.DAO
         }
 
         /// <summary>
-        /// Método resposnável por pesquisar agência dados pelos filtros passados
+        /// Resposnável por pesquisar dados pelos filtros passados
         /// </summary>
-        /// <param name="entidade">Entidade agência contedo os filtros que serão considerados na consulta</param>
-        /// <exception cref="ArgumentException">Excação lançada quando o <paramref name="entidade"/> é nulo</exception>
-        /// <exception cref="RegistroNaoEncontradoException">Exception lançada quando não localizado o registro</exception>
-        /// <returns>Lista dos registros de agência encontrados no banco de dados pelo filtro infomado</returns>
+        /// <param name="entidade"> Entidade contedo os filtros que serão considerados na consulta</param>
+        /// <exception cref="ArgumentException"> Excação lançada quando o <paramref name="entidade"/> é nulo</exception>
+        /// <exception cref="RegistroNaoEncontradoException"> Exception lançada quando não localizado o registro</exception>
+        /// <returns>Lista dos registros encontrados no banco de dados pelo filtro infomado</returns>
         public IList<Agencia> ListarPorEntidade(Agencia entidade)
         {
             if (entidade == null)
                 throw new ArgumentException("Entidade para filtro não informada");
             query = from queryFiltro
-                      in dbContext.Agencias.AsNoTracking()
-                    where queryFiltro.DataCancelamento == null
+                      in _dbContext.Agencias.AsNoTracking()
                     select queryFiltro;
             query = AdicionarFiltrosComuns(entidade);
             if (!string.IsNullOrWhiteSpace(entidade.Numero))
@@ -167,11 +156,24 @@ namespace ControleOrcamentoAPI.DAO
                 query = from filtro in query where filtro.DV.Equals(entidade.DV, StringComparison.InvariantCultureIgnoreCase) select filtro;
             if (entidade.BancoID > 0)
                 query = from filtro in query where filtro.BancoID == entidade.BancoID select filtro;
-            var result = query.ToArray().OrderBy(p => p.Numero).ToArray();
+            var result = query.ExecutaFuncao(FuncAjustaTimeZone).OrderBy(p => p.Numero).ToArray();
             if (result == null)
                 throw new RegistroNaoEncontradoException("Agência não localizada.");
             return result;
         }
 
+        /// <summary>
+        /// Responsavel por definir a função que deverá ser executada para ajustar dados de data e hora conforme Time Zone do usuário
+        /// </summary>
+        protected override void Configurar()
+        {
+            FuncAjustaTimeZone = data =>
+            {
+                if (data.DataAlteracao.HasValue) data.DataAlteracao = data.DataAlteracao.Value.ToTimeZoneTime(Token.TimeZone);
+                if (data.DataCancelamento.HasValue) data.DataCancelamento = data.DataCancelamento.Value.ToTimeZoneTime(Token.TimeZone);
+                if (data.DataInclusao.HasValue) data.DataInclusao = data.DataInclusao.Value.ToTimeZoneTime(Token.TimeZone);
+                return data;
+            };
+        }
     }
 }

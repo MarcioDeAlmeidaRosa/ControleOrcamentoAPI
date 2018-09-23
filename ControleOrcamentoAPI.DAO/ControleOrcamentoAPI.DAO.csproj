@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ControleOrcamentoAPI.DAO</RootNamespace>
     <AssemblyName>ControleOrcamentoAPI.DAO</AssemblyName>
-    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -67,8 +68,12 @@
     <Compile Include="UsuarioDAO.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\ControleOrcamentoAPI.Criptografia\ControleOrcamentoAPI.Criptografia.csproj">
-      <Project>{39d35e41-2f2d-470f-8857-3134b56fd9ad}</Project>
+      <Project>{39D35E41-2F2D-470F-8857-3134B56FD9AD}</Project>
       <Name>ControleOrcamentoAPI.Criptografia</Name>
     </ProjectReference>
     <ProjectReference Include="..\ControleOrcamentoAPI.DataAccess\ControleOrcamentoAPI.DataAccess.csproj">
@@ -76,17 +81,21 @@
       <Name>ControleOrcamentoAPI.DataAccess</Name>
     </ProjectReference>
     <ProjectReference Include="..\ControleOrcamentoAPI.Exceptions\ControleOrcamentoAPI.Exceptions.csproj">
-      <Project>{a6676e5d-48f6-4475-8031-fa64c9fd37a3}</Project>
+      <Project>{A6676E5D-48F6-4475-8031-FA64C9FD37A3}</Project>
       <Name>ControleOrcamentoAPI.Exceptions</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ControleOrcamentoAPI.Extensoes\ControleOrcamentoAPI.Extensoes.csproj">
+      <Project>{015ca06c-a941-4014-8b5f-b5c810b6f243}</Project>
+      <Name>ControleOrcamentoAPI.Extensoes</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ControleOrcamentoAPI.Model\ControleOrcamentoAPI.Models.csproj">
-      <Project>{d7f3c038-d44b-43ee-b8f1-47ff9ef53b99}</Project>
+      <Project>{D7F3C038-D44B-43EE-B8F1-47FF9EF53B99}</Project>
       <Name>ControleOrcamentoAPI.Models</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-    <None Include="packages.config" />
+    <ProjectReference Include="..\ControleOrcamentoAPI.Utils\ControleOrcamentoAPI.Utils.csproj">
+      <Project>{99d81597-4b7b-4018-be71-0a0a46ffad51}</Project>
+      <Name>ControleOrcamentoAPI.Utils</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

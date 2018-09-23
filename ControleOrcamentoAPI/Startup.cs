@@ -2,6 +2,7 @@
 using System;
 using System.Configuration;
 using Microsoft.Owin.Security.OAuth;
+using ControleOrcamentoAPI.Models.Mapper;
 
 namespace ControleOrcamentoAPI
 {
@@ -16,6 +17,7 @@ namespace ControleOrcamentoAPI
 
         static Startup()
         {
+            AutoMapperConfig.RegisterMappings();
             OAuthOptions = new OAuthAuthorizationServerOptions
             {
                 AccessTokenExpireTimeSpan = TimeSpan.FromDays(1),

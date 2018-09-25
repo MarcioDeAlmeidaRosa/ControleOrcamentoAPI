@@ -9,27 +9,46 @@ using System.Security.Cryptography;
 
 namespace ControleOrcamentoAPI.Criptografia
 {
+    /// <summary>
+    /// Responsável por gerar a senha criptografada usando Salt
+    /// </summary>
     public class Salt
     {
         //Fonte
         //https://imasters.com.br/back-end/bouncy-castle-senhas-seguras-usando-salt
 
+        /// <summary>
+        /// Armazena configuração do Salt para ser utilizado
+        /// </summary>
         private int _LengthSalt = 0;
 
+        /// <summary>
+        /// Defini a configuração do Salt para ser utilizado
+        /// </summary>
+        /// <param name="lengthSalt"></param>
         public Salt(int lengthSalt)
         {
             _LengthSalt = lengthSalt;
             if (_LengthSalt <= 0) _LengthSalt = 32;
         }
-
-        /*        
-         * Iniciamos a variavel que instancia um Hash-based Message Authentication Code (HMac), que usa como         
-         * parâmetro um algoritmos de hash no meu caso eu uso Sha512.
-         * A Idéia de HMAC é combinar funções hash conhecidas como MD5, SHA-1 e 
-         * RIPEMD-160 a MAC (message authentication code)
-        */
+        
+        /// <summary>
+        /// Iniciamos a variavel que instancia um Hash-based Message Authentication Code (HMac), que usa como         
+        /// parâmetro um algoritmos de hash no meu caso eu uso Sha512.
+        /// A Idéia de HMAC é combinar funções hash conhecidas como MD5, SHA-1 e 
+        /// RIPEMD-160 a MAC (message authentication code)
+        /// </summary>
         private readonly IMac hMac = new HMac(new Sha512Digest());
 
+        /// <summary>
+        /// Controi objeto para gerar a criptografia
+        /// </summary>
+        /// <param name="PassowordBytes"></param>
+        /// <param name="SaltBytes"></param>
+        /// <param name="IterationCount"></param>
+        /// <param name="iBuf"></param>
+        /// <param name="outBytes"></param>
+        /// <param name="outOff"></param>
         private void Blocks(
             byte[] PassowordBytes,
             byte[] SaltBytes,
@@ -80,11 +99,27 @@ namespace ControleOrcamentoAPI.Criptografia
             }
         }
 
+        /// <summary>
+        /// Gera derivados da chave
+        /// </summary>
+        /// <param name="lengthSalt"></param>
+        /// <param name="p"></param>
+        /// <param name="saltDeSerializado"></param>
+        /// <param name="v"></param>
+        /// <returns></returns>
         public byte[] GenerateDerivedKey(int lengthSalt, object p, byte[] saltDeSerializado, int v)
         {
             throw new NotImplementedException();
         }
 
+        //O octeto é uma unidade de informação digital em computação e telecomunicações que consiste em oito bits. 
+        //O termo geralmente é usado quando o termo byte pode ser ambíguo, já que o byte tem sido usado historicamente 
+        //para unidades de armazenamento de vários tamanhos. O termo octad para oito bits não é mais comum.
+        /// <summary>
+        /// Convert int em Octet
+        /// </summary>
+        /// <param name="Buffer"></param>
+        /// <param name="i"></param>
         private void IntToOctet(
             byte[] Buffer,
             int i)
@@ -95,6 +130,14 @@ namespace ControleOrcamentoAPI.Criptografia
             Buffer[3] = (byte)i;
         }
 
+        /// <summary>
+        /// Gera derivados da chave
+        /// </summary>
+        /// <param name="dkLen"></param>
+        /// <param name="mPassword"></param>
+        /// <param name="mSalt"></param>
+        /// <param name="mIterationCount"></param>
+        /// <returns></returns>
         public byte[] GenerateDerivedKey(int dkLen, byte[] mPassword, byte[] mSalt, int mIterationCount)
         {
             //pega o tamanho do bloco para este MAC em bytes.
@@ -114,9 +157,10 @@ namespace ControleOrcamentoAPI.Criptografia
             return output;
         }
 
-        /*
-         * Gera valores aleatórios usando a classe SecureRandom e retorna um array de bytes.       
-         */
+        /// <summary>
+        /// Gera valores aleatórios usando a classe SecureRandom e retorna um array de bytes.       
+        /// </summary>
+        /// <returns>Retorna o valor SALT gerado</returns>
         public byte[] GenerateSalt()
         {
             byte[] salt = new byte[_LengthSalt];
@@ -125,9 +169,11 @@ namespace ControleOrcamentoAPI.Criptografia
             return salt;
         }
 
-        /*
-         * Retorna a nova senha gerada em formato string
-         */
+        /// <summary>
+        /// Retorna a nova senha gerada em formato string
+        /// </summary>
+        /// <param name="result"></param>
+        /// <returns>Retorna a senha gerada</returns>
         public string getPassword(byte[] result)
         {
             string x = "";

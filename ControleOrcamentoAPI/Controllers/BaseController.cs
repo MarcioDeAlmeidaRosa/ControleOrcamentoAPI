@@ -8,8 +8,14 @@ using ControleOrcamentoAPI.Models;
 
 namespace ControleOrcamentoAPI.Controllers
 {
+    /// <summary>
+    /// Definição de um controle da aplicação
+    /// </summary>
     public abstract class BaseController : ApiController
     {
+        /// <summary>
+        /// Dados do usuário logado na aplicação
+        /// </summary>
         protected UsuarioAutenticado User
         {
             get
@@ -20,6 +26,11 @@ namespace ControleOrcamentoAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Tratamento dos erros lançados pelo processamento da aplicação
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <returns></returns>
         protected HttpResponseMessage InternalErro(Exception ex)
         {
             //Appendix A. HTTP Response Status Codes

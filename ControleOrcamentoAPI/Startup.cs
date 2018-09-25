@@ -6,15 +6,28 @@ using ControleOrcamentoAPI.Models.Mapper;
 
 namespace ControleOrcamentoAPI
 {
+    /// <summary>
+    /// Classe parcial de inicializaão da aplicãção
+    /// </summary>
     public partial class Startup
     {
+        /// <summary>
+        /// Propriedade de configuração da autenticação oauth
+        /// </summary>
         public static OAuthAuthorizationServerOptions OAuthOptions { get; private set; }
 
+        /// <summary>
+        /// Configura a aplicação para utilizar Oauth
+        /// </summary>
+        /// <param name="app">Instância da aplicação</param>
         public void Configuration(IAppBuilder app)
         {
             app.UseOAuthBearerTokens(OAuthOptions);
         }
 
+        /// <summary>
+        /// Inicialização da aplicação
+        /// </summary>
         static Startup()
         {
             AutoMapperConfig.RegisterMappings();

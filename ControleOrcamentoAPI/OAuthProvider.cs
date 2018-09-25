@@ -8,8 +8,16 @@ using ControleOrcamentoAPI.Orquestrador;
 
 namespace ControleOrcamentoAPI
 {
+    /// <summary>
+    /// Privider para configuração do Oauth
+    /// </summary>
     public class OAuthProvider : OAuthAuthorizationServerProvider
     {
+        /// <summary>
+        /// Responsável por efetuar login do usuário na aplicação
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public override Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
             return Task.Factory.StartNew(() =>
@@ -54,6 +62,11 @@ namespace ControleOrcamentoAPI
             });
         }
 
+        /// <summary>
+        /// Valida credencias do usuário para acessar os métodos da API
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public override Task ValidateClientAuthentication(OAuthValidateClientAuthenticationContext context)
         {
             if (context.ClientId == null)

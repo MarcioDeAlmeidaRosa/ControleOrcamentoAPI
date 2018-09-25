@@ -1,47 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using ControleOrcamentoAPI.Models;
 
 namespace ControleOrcamentoAPI.DAO
 {
     /// <summary>
-    /// Definição do contrato do DAO
+    /// Interface de definição dos métodos obrigatórios em um DAO
     /// </summary>
+    /// <typeparam name="T">Entidade que será utilizada no lugar do T</typeparam>
     public interface IDAO<T> where T : Entity, new()
     {
         /// <summary>
-        /// Resposnável por atualizar o registro na entidade
+        /// Resposnável por atualizar o registro na entidade do tipo <typeparamref name="T"/>
         /// </summary>
-        /// <param name="id"> ID da entidade para efetuar atualização no banco de dados</param>
-        /// <param name="entidade"> Entidade contendo as informações que serão atualizadas no banco de dados</param>
+        /// <param name="id">ID do registro da entidade informada no tipo <typeparamref name="T"/></param>
+        /// <param name="entidade"> Entidade do tipo <typeparamref name="T"/> contendo as informações que serão atualizadas no banco de dados</param>
         /// <returns>Entidade atualizada no banco de dados</returns>
         T Atualizar(long id, T entidade);
 
         /// <summary>
-        /// Resposnável por pesquisar dados por ID
+        /// Responsável por recuperar a entidade definida no tipo <typeparamref name="T"/> pelo ID
         /// </summary>
-        /// <param name="id"> ID da entidade para esquisa no banco de dados</param>
-        /// <returns>Entidade encontrada no banco de dados pelo ID informado</returns>
+        /// <param name="id">ID do registro da entidade informada no tipo <typeparamref name="T"/></param>
+        /// <returns>Objeto do tipo <typeparamref name="T"/> encontrado pelo id informado</returns>
         T BuscarPorID(long id);
 
         /// <summary>
-        /// Resposnável por incluir novo registro na entidade na coleção
+        /// Resposnável por incluir novo registro na entidade na coleção do tipo <typeparamref name="T"/>
         /// </summary>
-        /// <param name="entidade"> Entidade contendo as informações que serão inseridas no banco de dados</param>
-        /// <returns>Entidade incluída no banco de dados</returns>
+        /// <param name="entidade"> Entidade do tipo <typeparamref name="T"/> contendo as informações que serão inseridas no banco de dados</param>
+        /// <returns>Entidade do tipo <typeparamref name="T"/> incluída no banco de dados</returns>
         T Criar(T entidade);
 
         /// <summary>
         /// Resposnável por excluir logicamente o registro informado
         /// </summary>
-        /// <param name="id"> Chave primária do registro no banco de dados</param>
+        /// <param name="id">ID do registro da entidade informada no tipo <typeparamref name="T"/></param>
         void Deletar(long id);
 
         /// <summary>
-        /// Resposnável por pesquisar dados pelos filtros passados
+        /// Responsável por recuperar uma lista da entidade definida no tipo <typeparamref name="T"/> pelo campos da própria entidade
         /// </summary>
-        /// <param name="entidade"> Entidade contedo os filtros que serão considerados na consulta</param>
-        /// <returns>Lista dos registros encontrados no banco de dados pelo filtro infomado</returns>
+        /// <param name="entidade"> Entidade do tipo <typeparamref name="T"/> contendo as informações que serão utilizadas para filtrar os dados</param>
+        /// <returns>Objetos encontrado pelo filtro informado do tipo <typeparamref name="T"/></returns>
         IList<T> ListarPorEntidade(T entidade);
     }
 }

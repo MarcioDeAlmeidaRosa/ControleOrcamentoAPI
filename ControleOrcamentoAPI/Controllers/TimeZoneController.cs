@@ -21,6 +21,5 @@ namespace ControleOrcamentoAPI.Controllers
                 return InternalErro(ex);
             }
         }
-
     }
 }

@@ -18,6 +18,9 @@ namespace ControleOrcamentoAPI.DAO
     /// </summary>
     public class AuthDAO : DAO<Usuario>
     {
+        /// <summary>
+        /// propriedade responsável por armazenar a configuração do tamanho do Salt que a aplicação irá utilizar
+        /// </summary>
         private static readonly int _LengthSalt = 0;
 
         /// <summary>
@@ -114,15 +117,8 @@ namespace ControleOrcamentoAPI.DAO
         }
 
         /// <summary>
-        /// Responsável por efetuar a validação do token gerado
+        /// Responsavel por definir a função que deverá ser executada para ajustar dados de data e hora conforme Time Zone do usuário
         /// </summary>
-        /// <param name="token"> Usuário logado na aplicação</param>
-        /// <returns>Informações básicas para autenticar o usuário</returns>
-        public UsuarioAutenticado ValidaToken(UsuarioAutenticado token)
-        {
-            throw new System.NotImplementedException();
-        }
-
         protected override void Configurar()
         {
             //TODO: REMOVER

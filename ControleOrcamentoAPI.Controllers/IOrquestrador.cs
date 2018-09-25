@@ -4,26 +4,49 @@ using ControleOrcamentoAPI.Models;
 namespace ControleOrcamentoAPI.Orquestrador
 {
     /// <summary>
-    /// Definição do contrato do orquestrador
+    /// Interface de definição dos métodos obrigatorios de um Orquestrador
     /// </summary>
-    /// <typeparam name="T">Entidade que assumirá no generic</typeparam>
+    /// <typeparam name="T">Entidade que assumirá no lugar do T</typeparam>
     public interface IOrquestrador<T> where T : Entity, new()
     {
         /// <summary>
-        /// Definição do método que deve ser implementado pela classe concreta ao ser implementada, método responsável por recuperar 
-        /// a entidade informada no tipo T por id
+        /// Resposnável por atualizar o registro na entidade do tipo <typeparamref name="T"/>
         /// </summary>
-        /// <param name="id">Chave primária do registro na entidade informada no tipo T</param>
+        /// <param name="id">ID do registro da entidade informada no tipo <typeparamref name="T"/></param>
+        /// <param name="entidade"> Entidade do tipo <typeparamref name="T"/> contendo as informações que serão atualizadas no banco de dados</param>
         /// <param name="token"> Usuário logado na aplicação</param>
-        /// <returns>Objeto encontrado pelo id informado do tipo T</returns>
+        /// <returns>Entidade atualizada no banco de dados</returns>
+        T Atualizar(long id, T entidade, UsuarioAutenticado token);
+
+        /// <summary>
+        /// Responsável por recuperar a entidade definida no tipo <typeparamref name="T"/> pelo ID
+        /// </summary>
+        /// <param name="id">ID do registro da entidade informada no tipo <typeparamref name="T"/></param>
+        /// <param name="token"> Usuário logado na aplicação</param>
+        /// <returns>Objeto do tipo <typeparamref name="T"/> encontrado pelo id informado</returns>
         T BuscarPorID(long id, UsuarioAutenticado token);
 
-        IList<T> ListarPorEntidade(T entidade, UsuarioAutenticado token);
-
+        /// <summary>
+        /// Resposnável por incluir novo registro na entidade na coleção do tipo <typeparamref name="T"/>
+        /// </summary>
+        /// <param name="entidade"> Entidade do tipo <typeparamref name="T"/> contendo as informações que serão inseridas no banco de dados</param>
+        /// <param name="token"> Usuário logado na aplicação</param>
+        /// <returns>Entidade do tipo <typeparamref name="T"/> incluída no banco de dados</returns>
         T Criar(T entidade, UsuarioAutenticado token);
 
+        /// <summary>
+        /// Resposnável por excluir logicamente o registro informado
+        /// </summary>
+        /// <param name="id">ID do registro da entidade informada no tipo <typeparamref name="T"/></param>
+        /// <param name="token"> Usuário logado na aplicação</param>
         void Deletar(long id, UsuarioAutenticado token);
 
-        T Atualizar(long id, T entidade, UsuarioAutenticado token);
+        /// <summary>
+        /// Responsável por recuperar uma lista da entidade definida no tipo <typeparamref name="T"/> pelo campos da própria entidade
+        /// </summary>
+        /// <param name="entidade"> Entidade do tipo <typeparamref name="T"/> contendo as informações que serão utilizadas para filtrar os dados</param>
+        /// <param name="token"> Usuário logado na aplicação</param>
+        /// <returns>Objetos encontrado pelo filtro informado do tipo <typeparamref name="T"/></returns>
+        IList<T> ListarPorEntidade(T entidade, UsuarioAutenticado token);
     }
 }

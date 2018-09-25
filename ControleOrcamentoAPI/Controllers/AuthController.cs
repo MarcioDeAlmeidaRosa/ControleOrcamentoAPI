@@ -31,20 +31,5 @@ namespace ControleOrcamentoAPI.Controllers
                 return InternalErro(ex);
             }
         }
-
-        [Route("validarToken")]
-        [HttpPost]
-        [Authorize(Roles = "ADMIN, USER")]
-        public HttpResponseMessage ValidarToken(UsuarioAutenticado token)
-        {
-            try
-            {
-                return Request.CreateResponse(HttpStatusCode.OK, _orquestrador.ValidaToken(token));
-            }
-            catch (Exception ex)
-            {
-                return InternalErro(ex);
-            }
-        }
     }
 }

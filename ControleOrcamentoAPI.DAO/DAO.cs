@@ -7,10 +7,14 @@ using ControleOrcamentoAPI.DataAccess;
 namespace ControleOrcamentoAPI.DAO
 {
     /// <summary>
-    /// Funcionalidades comuns entres dos DAOs
+    /// Classe que fornece o acesso ao bando de dados para a aplicação
     /// </summary>
+    /// <typeparam name="T">Entidade que assumirá no lugar do T</typeparam>
     public abstract class DAO<T> : IDisposable where T : Entity
     {
+        /// <summary>
+        /// Propriedade que irá armazenar a função para transfomar as datas em formato UTC no formato da Time Zone do usuário
+        /// </summary>
         protected Func<T, T> FuncAjustaTimeZone { get; set; }
 
         /// <summary>

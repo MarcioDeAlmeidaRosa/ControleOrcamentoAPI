@@ -17,7 +17,7 @@ namespace ControleOrcamentoAPI.Orquestrador
         /// <param name="entidade"> Entidade do tipo <typeparamref name="T"/> contendo as informações que serão atualizadas no banco de dados</param>
         /// <param name="token"> Usuário logado na aplicação</param>
         /// <returns>Entidade atualizada no banco de dados</returns>
-        T Atualizar(long id, T entidade, UsuarioAutenticado token);
+        Task<T> Atualizar(long id, T entidade, UsuarioAutenticado token);
 
         /// <summary>
         /// Responsável por recuperar a entidade definida no tipo <typeparamref name="T"/> pelo ID
@@ -25,7 +25,7 @@ namespace ControleOrcamentoAPI.Orquestrador
         /// <param name="id">ID do registro da entidade informada no tipo <typeparamref name="T"/></param>
         /// <param name="token"> Usuário logado na aplicação</param>
         /// <returns>Objeto do tipo <typeparamref name="T"/> encontrado pelo id informado</returns>
-        T BuscarPorID(long id, UsuarioAutenticado token);
+        Task<T> BuscarPorID(long id, UsuarioAutenticado token);
 
         /// <summary>
         /// Resposnável por incluir novo registro na entidade na coleção do tipo <typeparamref name="T"/>
@@ -33,7 +33,7 @@ namespace ControleOrcamentoAPI.Orquestrador
         /// <param name="entidade"> Entidade do tipo <typeparamref name="T"/> contendo as informações que serão inseridas no banco de dados</param>
         /// <param name="token"> Usuário logado na aplicação</param>
         /// <returns>Entidade do tipo <typeparamref name="T"/> incluída no banco de dados</returns>
-        T Criar(T entidade, UsuarioAutenticado token);
+        Task<T> Criar(T entidade, UsuarioAutenticado token);
 
         /// <summary>
         /// Resposnável por excluir logicamente o registro informado

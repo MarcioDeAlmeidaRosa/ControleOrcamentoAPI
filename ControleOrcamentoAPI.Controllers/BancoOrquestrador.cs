@@ -17,11 +17,11 @@ namespace ControleOrcamentoAPI.Orquestrador
         /// <param name="entidade"> Entidade do tipo Banco contendo as informações que serão atualizadas no banco de dados</param>
         /// <param name="token"> Usuário logado na aplicação</param>
         /// <returns>Entidade atualizada no banco de dados</returns>
-        public Banco Atualizar(long id, Banco entidade, UsuarioAutenticado token)
+        public async Task<Banco> Atualizar(long id, Banco entidade, UsuarioAutenticado token)
         {
             using (var dao = new BancoDAO(token))
             {
-                return dao.Atualizar(id, entidade);
+                return await dao.Atualizar(id, entidade);
             }
         }
 
@@ -31,11 +31,11 @@ namespace ControleOrcamentoAPI.Orquestrador
         /// <param name="id">ID do registro da entidade informada no tipo Banco</param>
         /// <param name="token"> Usuário logado na aplicação</param>
         /// <returns>Objeto do tipo Banco encontrado pelo id informado</returns>
-        public Banco BuscarPorID(long id, UsuarioAutenticado token)
+        public async Task<Banco> BuscarPorID(long id, UsuarioAutenticado token)
         {
             using (var dao = new BancoDAO(token))
             {
-                return dao.BuscarPorID(id);
+                return await dao.BuscarPorID(id);
             }
         }
 
@@ -45,11 +45,11 @@ namespace ControleOrcamentoAPI.Orquestrador
         /// <param name="entidade"> Entidade do tipo Banco contendo as informações que serão inseridas no banco de dados</param>
         /// <param name="token"> Usuário logado na aplicação</param>
         /// <returns>Entidade do tipo Banco incluída no banco de dados</returns>
-        public Banco Criar(Banco entidade, UsuarioAutenticado token)
+        public async Task<Banco> Criar(Banco entidade, UsuarioAutenticado token)
         {
             using (var dao = new BancoDAO(token))
             {
-                return dao.Criar(entidade);
+                return await dao.Criar(entidade);
             }
         }
 

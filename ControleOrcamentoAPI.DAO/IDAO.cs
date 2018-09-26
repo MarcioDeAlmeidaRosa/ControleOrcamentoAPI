@@ -16,21 +16,21 @@ namespace ControleOrcamentoAPI.DAO
         /// <param name="id">ID do registro da entidade informada no tipo <typeparamref name="T"/></param>
         /// <param name="entidade"> Entidade do tipo <typeparamref name="T"/> contendo as informações que serão atualizadas no banco de dados</param>
         /// <returns>Entidade atualizada no banco de dados</returns>
-        T Atualizar(long id, T entidade);
+        Task<T> Atualizar(long id, T entidade);
 
         /// <summary>
         /// Responsável por recuperar a entidade definida no tipo <typeparamref name="T"/> pelo ID
         /// </summary>
         /// <param name="id">ID do registro da entidade informada no tipo <typeparamref name="T"/></param>
         /// <returns>Objeto do tipo <typeparamref name="T"/> encontrado pelo id informado</returns>
-        T BuscarPorID(long id);
+        Task<T> BuscarPorID(long id);
 
         /// <summary>
         /// Resposnável por incluir novo registro na entidade na coleção do tipo <typeparamref name="T"/>
         /// </summary>
         /// <param name="entidade"> Entidade do tipo <typeparamref name="T"/> contendo as informações que serão inseridas no banco de dados</param>
         /// <returns>Entidade do tipo <typeparamref name="T"/> incluída no banco de dados</returns>
-        T Criar(T entidade);
+        Task<T> Criar(T entidade);
 
         /// <summary>
         /// Resposnável por excluir logicamente o registro informado

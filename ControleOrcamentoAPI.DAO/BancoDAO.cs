@@ -34,22 +34,19 @@ namespace ControleOrcamentoAPI.DAO
         /// <exception cref="RegistroNaoEncontradoException"> Exception lançada quando não localizado o registro</exception>
         /// <exception cref="RegistroUpdateException"> Exception lançada quando acontece algum erro no momento de atualizar o registro</exception>
         /// <returns>Entidade atualizada no banco de dados</returns>
-        public Banco Atualizar(long id, Banco entidade)
+        public async Task<Banco> Atualizar(long id, Banco entidade)
         {
-            if (id <= 0)
-                throw new ArgumentException("Não informado o id para atualização");
-            if (entidade == null)
-                throw new ArgumentException("Não informado a entidade para atualização");
+            if (id <= 0) throw new ArgumentException("Não informado o id para atualização");
+            if (entidade == null) throw new ArgumentException("Não informado a entidade para atualização");
             try
             {
-                var entidadeLocalizada = ListarPorEntidade(new Banco() { ID = id }).FirstOrDefault();
-                if (entidadeLocalizada == null)
-                    throw new RegistroNaoEncontradoException("Banco não localizado.");
+                var entidadeLocalizada = await _dbContext.Bancos.FindAsync(id);
+                if (entidadeLocalizada == null) throw new RegistroNaoEncontradoException("Banco não localizado.");
                 Mapper.Map(entidade, entidadeLocalizada);
                 entidadeLocalizada.DataAlteracao = DateTime.UtcNow;
                 entidadeLocalizada.UsuarioAlteracao = Token.ID;
-                _dbContext.SaveChanges();
-                return BuscarPorID(entidadeLocalizada.ID);
+                await _dbContext.SaveChangesAsync();
+                return await BuscarPorID(entidadeLocalizada.ID);
             }
             catch (DbUpdateException ex)
             {
@@ -70,11 +67,10 @@ namespace ControleOrcamentoAPI.DAO
         /// <exception cref="ArgumentException"> Excação lançada quando o <paramref name="id"/> da entidade e 0</exception>
         /// <exception cref="RegistroNaoEncontradoException"> Exception lançada quando não localizado o registro</exception>
         /// <returns>Entidade encontrada no banco de dados pelo ID informado</returns>
-        public Banco BuscarPorID(long id)
+        public async Task<Banco> BuscarPorID(long id)
         {
-            if (id <= 0)
-                throw new ArgumentException("Não informado o ID para pesquisar");
-            var entidadeLocalizada = ListarPorEntidade(new Banco() { ID = id }).FirstOrDefault();
+            if (id <= 0) throw new ArgumentException("Não informado o ID para pesquisar");
+            var entidadeLocalizada = await _dbContext.Bancos.FindAsync(id);
             if (entidadeLocalizada == null) throw new RegistroNaoEncontradoException("Banco não localizado.");
             return entidadeLocalizada;
         }
@@ -86,17 +82,16 @@ namespace ControleOrcamentoAPI.DAO
         /// <exception cref="ArgumentException"> Excação lançada quando o <paramref name="entidade"/> da entidade e nula</exception>
         /// <exception cref="RegistroInsertException"> Exception lançada ocorre algúm problema na inclusão do registro</exception>
         /// <returns>Entidade incluída no banco de dados</returns>
-        public Banco Criar(Banco entidade)
+        public async Task<Banco> Criar(Banco entidade)
         {
-            if (entidade == null)
-                throw new ArgumentException("Não informado a entidade para inclusão");
+            if (entidade == null) throw new ArgumentException("Não informado a entidade para inclusão");
             try
             {
                 entidade.DataInclusao = DateTime.UtcNow;
                 entidade.UsuarioInclusao = Token.ID;
                 _dbContext.Bancos.Add(entidade);
-                _dbContext.SaveChanges();
-                return BuscarPorID(entidade.ID);
+                await _dbContext.SaveChangesAsync();
+                return await BuscarPorID(entidade.ID);
             }
             catch (DbUpdateException ex)
             {

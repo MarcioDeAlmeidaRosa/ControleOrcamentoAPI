@@ -17,11 +17,11 @@ namespace ControleOrcamentoAPI.Orquestrador
         /// <param name="entidade"> Entidade do tipo Usuário contendo as informações que serão atualizadas no banco de dados</param>
         /// <param name="token"> Usuário logado na aplicação</param>
         /// <returns>Entidade atualizada no banco de dados</returns>
-        public Usuario Atualizar(long id, Usuario entidade, UsuarioAutenticado token)
+        public async Task<Usuario> Atualizar(long id, Usuario entidade, UsuarioAutenticado token)
         {
             using (var dao = new UsuarioDAO(token))
             {
-                return dao.Atualizar(id, entidade);
+                return await dao.Atualizar(id, entidade);
             }
         }
 
@@ -31,11 +31,11 @@ namespace ControleOrcamentoAPI.Orquestrador
         /// <param name="id">ID do registro da entidade informada no tipo Usuário</param>
         /// <param name="token"> Usuário logado na aplicação</param>
         /// <returns>Objeto do tipo Usuário encontrado pelo id informado</returns>
-        public Usuario BuscarPorID(long id, UsuarioAutenticado token)
+        public async Task<Usuario> BuscarPorID(long id, UsuarioAutenticado token)
         {
             using (var dao = new UsuarioDAO(token))
             {
-                return dao.BuscarPorID(id);
+                return await dao.BuscarPorID(id);
             }
         }
 
@@ -45,11 +45,11 @@ namespace ControleOrcamentoAPI.Orquestrador
         /// <param name="entidade"> Entidade do tipo Usuário contendo as informações que serão inseridas no banco de dados</param>
         /// <param name="token"> Usuário logado na aplicação</param>
         /// <returns>Entidade do tipo Usuário incluída no banco de dados</returns>
-        public Usuario Criar(Usuario entidade, UsuarioAutenticado token)
+        public async Task<Usuario> Criar(Usuario entidade, UsuarioAutenticado token)
         {
             using (var dao = new UsuarioDAO(token))
             {
-                return dao.Criar(entidade);
+                return await dao.Criar(entidade);
             }
         }
 

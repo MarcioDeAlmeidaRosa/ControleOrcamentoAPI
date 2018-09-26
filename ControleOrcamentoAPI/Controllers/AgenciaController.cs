@@ -33,11 +33,11 @@ namespace ControleOrcamentoAPI.Controllers
         /// <param name="id">Id da Agência que deseja ser consultada</param>
         /// <returns>Entidade Agência encontrada do banco de dados</returns>
         [Authorize(Roles = "ADMIN, USER")]
-        public HttpResponseMessage Get(long id)
+        public async Task<HttpResponseMessage> Get(long id)
         {
             try
             {
-                return Request.CreateResponse(HttpStatusCode.OK, _orquestrador.BuscarPorID(id, User));
+                return Request.CreateResponse(HttpStatusCode.OK, await _orquestrador.BuscarPorID(id, User));
             }
             catch (Exception ex)
             {
@@ -69,11 +69,11 @@ namespace ControleOrcamentoAPI.Controllers
         /// <param name="entidade">Dados da Agência para cadastrar na aplicação</param>
         /// <returns>Agência cadastrada na aplicação</returns>
         [Authorize(Roles = "ADMIN, USER")]
-        public HttpResponseMessage Post([FromBody]Agencia entidade)
+        public async Task<HttpResponseMessage> Post([FromBody]Agencia entidade)
         {
             try
             {
-                return Request.CreateResponse(HttpStatusCode.Created, _orquestrador.Criar(entidade, User));
+                return Request.CreateResponse(HttpStatusCode.Created, await _orquestrador.Criar(entidade, User));
             }
             catch (Exception ex)
             {
@@ -88,11 +88,11 @@ namespace ControleOrcamentoAPI.Controllers
         /// <param name="entidade">Dados da Agência para atualização</param>
         /// <returns>Agência atualizada na aplicação</returns>
         [Authorize(Roles = "ADMIN, USER")]
-        public HttpResponseMessage Put(long id, [FromBody]Agencia entidade)
+        public async Task<HttpResponseMessage> Put(long id, [FromBody]Agencia entidade)
         {
             try
             {
-                return Request.CreateResponse(HttpStatusCode.Accepted, _orquestrador.Atualizar(id, entidade, User));
+                return Request.CreateResponse(HttpStatusCode.Accepted, await _orquestrador.Atualizar(id, entidade, User));
             }
             catch (Exception ex)
             {

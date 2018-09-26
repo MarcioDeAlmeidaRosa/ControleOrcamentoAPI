@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Threading.Tasks;
+using System.Collections.Generic;
 using ControleOrcamentoAPI.Models;
 
 namespace ControleOrcamentoAPI.Orquestrador
@@ -39,7 +40,8 @@ namespace ControleOrcamentoAPI.Orquestrador
         /// </summary>
         /// <param name="id">ID do registro da entidade informada no tipo <typeparamref name="T"/></param>
         /// <param name="token"> Usuário logado na aplicação</param>
-        void Deletar(long id, UsuarioAutenticado token);
+        /// <returns>Task para chamada assíncrona</returns>
+        Task Deletar(long id, UsuarioAutenticado token);
 
         /// <summary>
         /// Responsável por recuperar uma lista da entidade definida no tipo <typeparamref name="T"/> pelo campos da própria entidade

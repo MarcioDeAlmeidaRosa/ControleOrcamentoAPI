@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using ControleOrcamentoAPI.Models;
 
 namespace ControleOrcamentoAPI.DAO
@@ -35,7 +36,8 @@ namespace ControleOrcamentoAPI.DAO
         /// Resposnável por excluir logicamente o registro informado
         /// </summary>
         /// <param name="id">ID do registro da entidade informada no tipo <typeparamref name="T"/></param>
-        void Deletar(long id);
+        /// <returns>Task para chamada assíncrona</returns>
+        Task Deletar(long id);
 
         /// <summary>
         /// Responsável por recuperar uma lista da entidade definida no tipo <typeparamref name="T"/> pelo campos da própria entidade

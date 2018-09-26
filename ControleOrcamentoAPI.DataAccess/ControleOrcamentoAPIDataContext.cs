@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Data.Entity;
+using System.Threading.Tasks;
 using ControleOrcamentoAPI.Models;
 using System.Data.Entity.ModelConfiguration.Conventions;
 
@@ -79,8 +80,17 @@ namespace ControleOrcamentoAPI.DataAccess
                     entry.Property("DataAlteracao").CurrentValue = DateTime.UtcNow;
                 }
             }
-
             return base.SaveChanges();
+        }
+
+        /// <summary>
+        /// Responsável por salvar a entidade de forma assincrona
+        /// </summary>
+        /// <returns></returns>
+        public override Task<int> SaveChangesAsync()
+        {
+            SaveChanges();
+            return base.SaveChangesAsync();
         }
 
         /// <summary>

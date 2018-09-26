@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Threading.Tasks;
 using ControleOrcamentoAPI.Models;
 using ControleOrcamentoAPI.Orquestrador;
 
@@ -105,11 +106,11 @@ namespace ControleOrcamentoAPI.Controllers
         /// <param name="id">ID da Agência para deleção</param>
         /// <returns>Sucesso ou motivo do erro</returns>
         [Authorize(Roles = "ADMIN, USER")]
-        public HttpResponseMessage Delete([FromUri]long id)
+        public async Task<HttpResponseMessage> Delete([FromUri]long id)
         {
             try
             {
-                _orquestrador.Deletar(id, User);
+                await _orquestrador.Deletar(id, User);
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
             catch (Exception ex)

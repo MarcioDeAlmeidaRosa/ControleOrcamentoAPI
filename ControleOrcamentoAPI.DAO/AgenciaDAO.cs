@@ -3,6 +3,7 @@ using AutoMapper;
 using System.Linq;
 using System.Text;
 using System.Data;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using ControleOrcamentoAPI.Models;
 using System.Data.Entity.Validation;
@@ -116,23 +117,18 @@ namespace ControleOrcamentoAPI.DAO
         /// <param name="id"> Chave primária do registro no banco de dados</param>
         /// <exception cref="ArgumentException"> Excação lançada quando o <paramref name="id"/> é menor igual a 0</exception>
         /// <exception cref="RegistroDeleteException"> Exception lançada ocorre algúm problema na exclusao do registro</exception>
-        public void Deletar(long id)
+        /// <returns>Task para chamada assíncrona</returns>
+        public async Task Deletar(long id)
         {
-            if (id <= 0)
-                throw new ArgumentException("Não informado o ID para deleção");
-            try
-            {
-                var entidadeLocalizada = ListarPorEntidade(new Agencia() { ID = id }).FirstOrDefault();
-                if (entidadeLocalizada == null)
-                    throw new RegistroNaoEncontradoException("Agência não localizada.");
-                entidadeLocalizada.DataCancelamento = DateTime.UtcNow;
-                entidadeLocalizada.UsuarioCancelamento = Token.ID;
-                _dbContext.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                throw new RegistroDeleteException(ex.ToString());
-            }
+            if (id <= 0) throw new ArgumentException("Não informado o ID para deleção");
+            var entidadeLocalizada = await _dbContext.Agencias.FindAsync(id);
+            if ((entidadeLocalizada == null) || (entidadeLocalizada.DataCancelamento.HasValue) || (entidadeLocalizada.UsuarioInclusao != Token.ID))
+                throw new RegistroNaoEncontradoException("Agência não localizada.");
+            entidadeLocalizada.DataAlteracao = DateTime.UtcNow;
+            entidadeLocalizada.UsuarioAlteracao = Token.ID;
+            entidadeLocalizada.DataCancelamento = DateTime.UtcNow;
+            entidadeLocalizada.UsuarioCancelamento = Token.ID;
+            await _dbContext.SaveChangesAsync();
         }
 
         /// <summary>

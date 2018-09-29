@@ -73,11 +73,11 @@ namespace ControleOrcamentoAPI.Orquestrador
         /// <param name="entidade"> Entidade do tipo Banco contendo as informações que serão utilizadas para filtrar os dados</param>
         /// <param name="token"> Usuário logado na aplicação</param>
         /// <returns>Objetos encontrado pelo filtro informado do tipo Banco</returns>
-        public IList<Banco> ListarPorEntidade(Banco entidade, UsuarioAutenticado token)
+        public async Task<IList<Banco>> ListarPorEntidade(Banco entidade, UsuarioAutenticado token)
         {
             using (var dao = new BancoDAO(token))
             {
-                return dao.ListarPorEntidade(entidade);
+                return await dao.ListarPorEntidade(entidade);
             }
         }
     }

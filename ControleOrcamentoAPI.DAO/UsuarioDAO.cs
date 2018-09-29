@@ -39,21 +39,21 @@ namespace ControleOrcamentoAPI.DAO
             if (entidade == null) throw new ArgumentException("Não informado a entidade para atualização");
             try
             {
-                var entidadeLocalizada = await _dbContext.Usuarios.FindAsync(id);
+                var entidadeLocalizada = await FiltrarPorID(id, true);
                 if (entidadeLocalizada == null) throw new RegistroNaoEncontradoException("Usuário não localizado.");
                 Mapper.Map(entidade, entidadeLocalizada);
                 entidadeLocalizada.DataAlteracao = DateTime.UtcNow;
                 entidadeLocalizada.UsuarioAlteracao = Token.ID;
                 await _dbContext.SaveChangesAsync();
-                return await BuscarPorID(entidadeLocalizada.ID);
+                return await FiltrarPorID(entidadeLocalizada.ID);
             }
             catch (DbUpdateException ex)
             {
-                throw new RegistroUpdateException(string.Format("Usuário já cadastrado com o login {0}", entidade.Login), ex);
+                throw new RegistroUpdateException(string.Format("Usuário já cadastrado com o número para este banco {0}", entidade.Login), ex);
             }
             catch (DbEntityValidationException ex)
             {
-                StringBuilder st = new StringBuilder();
+                var st = new StringBuilder();
                 ex.EntityValidationErrors.ToList().ForEach(errs => errs.ValidationErrors.ToList().ForEach(err => st.AppendLine(err.ErrorMessage)));
                 throw new RegistroUpdateException(st.ToString(), ex);
             }
@@ -69,7 +69,7 @@ namespace ControleOrcamentoAPI.DAO
         public async Task<Usuario> BuscarPorID(long id)
         {
             if (id <= 0) throw new ArgumentException("Não informado o ID para pesquisar");
-            var entidadeLocalizada = await _dbContext.Usuarios.FindAsync(id);
+            var entidadeLocalizada = await FiltrarPorID(id);
             if (entidadeLocalizada == null) throw new RegistroNaoEncontradoException("Usuário não localizado.");
             return entidadeLocalizada;
         }
@@ -90,7 +90,7 @@ namespace ControleOrcamentoAPI.DAO
                 entidade.UsuarioInclusao = Token.ID;
                 _dbContext.Usuarios.Add(entidade);
                 await _dbContext.SaveChangesAsync();
-                return await BuscarPorID(entidade.ID);
+                return await FiltrarPorID(entidade.ID);
             }
             catch (DbUpdateException ex)
             {
@@ -114,8 +114,8 @@ namespace ControleOrcamentoAPI.DAO
         public async Task Deletar(long id)
         {
             if (id <= 0) throw new ArgumentException("Não informado o ID para deleção");
-            var entidadeLocalizada = await _dbContext.Usuarios.FindAsync(id);
-            if ((entidadeLocalizada == null) || (entidadeLocalizada.DataCancelamento.HasValue) || (entidadeLocalizada.UsuarioInclusao != Token.ID))
+            var entidadeLocalizada = await FiltrarPorID(id, true);
+            if ((entidadeLocalizada == null) || (entidadeLocalizada.DataCancelamento.HasValue))
                 throw new RegistroNaoEncontradoException("Usuário não localizado.");
             entidadeLocalizada.DataAlteracao = DateTime.UtcNow;
             entidadeLocalizada.UsuarioAlteracao = Token.ID;
@@ -131,61 +131,38 @@ namespace ControleOrcamentoAPI.DAO
         /// <exception cref="ArgumentException"> Excação lançada quando o <paramref name="entidade"/> é nulo</exception>
         /// <exception cref="RegistroNaoEncontradoException"> Exception lançada quando não localizado o registro</exception>
         /// <returns>Lista dos registros encontrados no banco de dados pelo filtro infomado</returns>
-        public IList<Usuario> ListarPorEntidade(Usuario entidade)
+        public async Task<IList<Usuario>> ListarPorEntidade(Usuario entidade)
         {
-            if (entidade == null)
-                throw new ArgumentException("Entidade para filtro não informada");
-            query = from queryFiltro
-                      in _dbContext.Usuarios.AsNoTracking()
-                    select queryFiltro;
-            query = AdicionarFiltrosComuns(entidade);
-            if (!string.IsNullOrWhiteSpace(entidade.Nome))
-                query = from filtro in query where filtro.Nome.Equals(entidade.Nome, StringComparison.InvariantCultureIgnoreCase) select filtro;
-            if (!string.IsNullOrWhiteSpace(entidade.SobreNome))
-                query = from filtro in query where filtro.SobreNome.Equals(entidade.SobreNome, StringComparison.InvariantCultureIgnoreCase) select filtro;
-            if (!string.IsNullOrWhiteSpace(entidade.Email))
-                query = from filtro in query where filtro.Email.Equals(entidade.Email, StringComparison.InvariantCultureIgnoreCase) select filtro;
-            if (!string.IsNullOrWhiteSpace(entidade.Login))
-                query = from filtro in query where filtro.Login.Equals(entidade.Login, StringComparison.InvariantCultureIgnoreCase) select filtro;
-            if (!string.IsNullOrWhiteSpace(entidade.Senha))
-                query = from filtro in query where filtro.Senha.Equals(entidade.Senha, StringComparison.InvariantCultureIgnoreCase) select filtro;
-            if (!string.IsNullOrWhiteSpace(entidade.Claim))
-                query = from filtro in query where filtro.Claim.Equals(entidade.Claim, StringComparison.InvariantCultureIgnoreCase) select filtro;
-            if (entidade.DataVerificacao.HasValue)
-                query = from filtro in query where filtro.DataVerificacao == entidade.DataVerificacao.Value.ToTimeZoneTime(Token.TimeZone) select filtro;
-            if (entidade.Verificado.HasValue)
-                query = from filtro in query where filtro.Verificado == entidade.Verificado.Value select filtro;
-            if (entidade.Bloqueado.HasValue)
-                query = from filtro in query where filtro.Bloqueado == entidade.Bloqueado.Value select filtro;
-            if (entidade.DataBloqueio.HasValue)
-                query = from filtro in query where filtro.DataBloqueio == entidade.DataBloqueio.Value.ToTimeZoneTime(Token.TimeZone) select filtro;
-            if (entidade.UsuarioBloqueio.HasValue)
-                query = from filtro in query where filtro.UsuarioBloqueio == entidade.UsuarioBloqueio.Value select filtro;
-            if (!string.IsNullOrWhiteSpace(entidade.TimeZone))
-                query = from filtro in query where filtro.TimeZone.Equals(entidade.TimeZone, StringComparison.InvariantCultureIgnoreCase) select filtro;
-            var result = query.ExecutaFuncao(FuncAjustaTimeZone).OrderBy(p => p.Nome).ThenBy(p => p.SobreNome).ThenBy(p => p.Email).ThenBy(p => p.Login).ToArray();
-            if (result == null)
-                throw new RegistroNaoEncontradoException("Usuário não localizada.");
-            return result;
-        }
-
-        /// <summary>
-        /// Responsavel por definir a função que deverá ser executada para ajustar dados de data e hora conforme Time Zone do usuário
-        /// </summary>
-        protected override void Configurar()
-        {
-            FuncAjustaTimeZone = data =>
+            var result = await FiltrarPorEntidade(entidade, new Action<Usuario>(_entidade =>
             {
-                if (data.DataAlteracao.HasValue) data.DataAlteracao = data.DataAlteracao.Value.ToTimeZoneTime(Token.TimeZone);
-                if (data.DataCancelamento.HasValue) data.DataCancelamento = data.DataCancelamento.Value.ToTimeZoneTime(Token.TimeZone);
-                if (data.DataInclusao.HasValue) data.DataInclusao = data.DataInclusao.Value.ToTimeZoneTime(Token.TimeZone);
-                if (data.DataVerificacao.HasValue) data.DataVerificacao = data.DataVerificacao.Value.ToTimeZoneTime(Token.TimeZone);
-                if (data.DataBloqueio.HasValue) data.DataBloqueio = data.DataBloqueio.Value.ToTimeZoneTime(Token.TimeZone);
-                data.Claim = null;
-                data.Senha = null;
-                data.Salt = null;
-                return data;
-            };
+                if (!string.IsNullOrWhiteSpace(_entidade.Nome))
+                    query = from filtro in query where filtro.Nome.EqualsIgnoreCase(_entidade.Nome) select filtro;
+                if (!string.IsNullOrWhiteSpace(_entidade.SobreNome))
+                    query = from filtro in query where filtro.SobreNome.EqualsIgnoreCase(_entidade.SobreNome) select filtro;
+                if (!string.IsNullOrWhiteSpace(_entidade.Email))
+                    query = from filtro in query where filtro.Email.EqualsIgnoreCase(_entidade.Email) select filtro;
+                if (!string.IsNullOrWhiteSpace(_entidade.Login))
+                    query = from filtro in query where filtro.Login.EqualsIgnoreCase(_entidade.Login) select filtro;
+                if (!string.IsNullOrWhiteSpace(_entidade.Senha))
+                    query = from filtro in query where filtro.Senha.EqualsIgnoreCase(_entidade.Senha) select filtro;
+                if (!string.IsNullOrWhiteSpace(_entidade.Claim))
+                    query = from filtro in query where filtro.Claim.EqualsIgnoreCase(_entidade.Claim) select filtro;
+                if (_entidade.DataVerificacao.HasValue)
+                    query = from filtro in query where filtro.DataVerificacao == _entidade.DataVerificacao.Value.ToTimeZoneTime(Token.TimeZone) select filtro;
+                if (_entidade.Verificado.HasValue)
+                    query = from filtro in query where filtro.Verificado == _entidade.Verificado.Value select filtro;
+                if (_entidade.Bloqueado.HasValue)
+                    query = from filtro in query where filtro.Bloqueado == _entidade.Bloqueado.Value select filtro;
+                if (_entidade.DataBloqueio.HasValue)
+                    query = from filtro in query where filtro.DataBloqueio == _entidade.DataBloqueio.Value.ToTimeZoneTime(Token.TimeZone) select filtro;
+                if (_entidade.UsuarioBloqueio.HasValue)
+                    query = from filtro in query where filtro.UsuarioBloqueio == _entidade.UsuarioBloqueio.Value select filtro;
+                if (!string.IsNullOrWhiteSpace(_entidade.TimeZone))
+                    query = from filtro in query where filtro.TimeZone.EqualsIgnoreCase(_entidade.TimeZone) select filtro;
+
+            }), false);
+            if ((result == null) || (result.Count < 1)) throw new RegistroNaoEncontradoException("Usuário não localizado");
+            return result.OrderBy(p => p.Nome).ThenBy(p => p.SobreNome).ThenBy(p => p.Email).ThenBy(p => p.Login).ToArray();
         }
     }
 }

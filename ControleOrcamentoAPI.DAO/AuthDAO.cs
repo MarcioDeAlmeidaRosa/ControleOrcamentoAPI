@@ -65,6 +65,9 @@ namespace ControleOrcamentoAPI.DAO
             if ((entidadeLocalizada.Bloqueado.HasValue) && (entidadeLocalizada.Bloqueado.Value))
                 throw new UsuarioBloqueadoException("Usuário bloqueado.");
 
+            if (entidadeLocalizada.DataCancelamento.HasValue)
+                throw new RegistroNaoEncontradoException("Usuário cancelado.");
+
             return new UsuarioAutenticado()
             {
                 ID = entidadeLocalizada.ID,
@@ -109,19 +112,11 @@ namespace ControleOrcamentoAPI.DAO
             }
             catch (DbEntityValidationException ex)
             {
-                StringBuilder st = new StringBuilder();
+                var st = new StringBuilder();
                 ex.EntityValidationErrors.ToList().ForEach(errs => errs.ValidationErrors.ToList().ForEach(err => st.AppendLine(err.ErrorMessage)));
                 //TODO AJUSTAR O EXCEPTION DO RETORNO
                 throw new Exception(st.ToString(), ex);
             }
-        }
-
-        /// <summary>
-        /// Responsavel por definir a função que deverá ser executada para ajustar dados de data e hora conforme Time Zone do usuário
-        /// </summary>
-        protected override void Configurar()
-        {
-            //TODO: REMOVER
         }
     }
 }

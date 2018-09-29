@@ -73,11 +73,11 @@ namespace ControleOrcamentoAPI.Orquestrador
         /// <param name="entidade"> Entidade do tipo Agencia contendo as informações que serão utilizadas para filtrar os dados</param>
         /// <param name="token"> Usuário logado na aplicação</param>
         /// <returns>Objetos encontrado pelo filtro informado do tipo Agencia</returns>
-        public IList<Agencia> ListarPorEntidade(Agencia entidade, UsuarioAutenticado token)
+        public async Task<IList<Agencia>> ListarPorEntidade(Agencia entidade, UsuarioAutenticado token)
         {
             using (var dao = new AgenciaDAO(token))
             {
-                return dao.ListarPorEntidade(entidade);
+                return await dao.ListarPorEntidade(entidade);
             }
         }
     }

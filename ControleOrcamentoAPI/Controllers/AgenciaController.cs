@@ -51,11 +51,11 @@ namespace ControleOrcamentoAPI.Controllers
         /// <param name="entidade">Dados de consulta de uma Agência</param>
         /// <returns>Listage de Agência cadastrada na aplicação</returns>
         [Authorize(Roles = "ADMIN, USER")]
-        public HttpResponseMessage Get([FromUri]Agencia entidade)
+        public async Task<HttpResponseMessage> Get([FromUri]Agencia entidade)
         {
             try
             {
-                return Request.CreateResponse(HttpStatusCode.OK, _orquestrador.ListarPorEntidade(entidade, User));
+                return Request.CreateResponse(HttpStatusCode.OK, await _orquestrador.ListarPorEntidade(entidade, User));
             }
             catch (Exception ex)
             {

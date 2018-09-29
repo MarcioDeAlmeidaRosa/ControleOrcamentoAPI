@@ -40,21 +40,21 @@ namespace ControleOrcamentoAPI.DAO
             if (entidade == null) throw new ArgumentException("Não informado a entidade para atualização");
             try
             {
-                var entidadeLocalizada = await _dbContext.Bancos.FindAsync(id);
+                var entidadeLocalizada = await FiltrarPorID(id, true);
                 if (entidadeLocalizada == null) throw new RegistroNaoEncontradoException("Banco não localizado.");
                 Mapper.Map(entidade, entidadeLocalizada);
                 entidadeLocalizada.DataAlteracao = DateTime.UtcNow;
                 entidadeLocalizada.UsuarioAlteracao = Token.ID;
                 await _dbContext.SaveChangesAsync();
-                return await BuscarPorID(entidadeLocalizada.ID);
+                return await FiltrarPorID(entidadeLocalizada.ID);
             }
             catch (DbUpdateException ex)
             {
-                throw new RegistroUpdateException(string.Format("Banco já cadastrado com o codigo {0}", entidade.Codigo), ex);
+                throw new RegistroUpdateException(string.Format("Banco já cadastrado com o número para este banco {0}", entidade.Codigo), ex);
             }
             catch (DbEntityValidationException ex)
             {
-                StringBuilder st = new StringBuilder();
+                var st = new StringBuilder();
                 ex.EntityValidationErrors.ToList().ForEach(errs => errs.ValidationErrors.ToList().ForEach(err => st.AppendLine(err.ErrorMessage)));
                 throw new RegistroUpdateException(st.ToString(), ex);
             }
@@ -70,7 +70,7 @@ namespace ControleOrcamentoAPI.DAO
         public async Task<Banco> BuscarPorID(long id)
         {
             if (id <= 0) throw new ArgumentException("Não informado o ID para pesquisar");
-            var entidadeLocalizada = await _dbContext.Bancos.FindAsync(id);
+            var entidadeLocalizada = await FiltrarPorID(id);
             if (entidadeLocalizada == null) throw new RegistroNaoEncontradoException("Banco não localizado.");
             return entidadeLocalizada;
         }
@@ -91,7 +91,7 @@ namespace ControleOrcamentoAPI.DAO
                 entidade.UsuarioInclusao = Token.ID;
                 _dbContext.Bancos.Add(entidade);
                 await _dbContext.SaveChangesAsync();
-                return await BuscarPorID(entidade.ID);
+                return await FiltrarPorID(entidade.ID);
             }
             catch (DbUpdateException ex)
             {
@@ -99,7 +99,7 @@ namespace ControleOrcamentoAPI.DAO
             }
             catch (DbEntityValidationException ex)
             {
-                StringBuilder st = new StringBuilder();
+                var st = new StringBuilder();
                 ex.EntityValidationErrors.ToList().ForEach(errs => errs.ValidationErrors.ToList().ForEach(err => st.AppendLine(err.ErrorMessage)));
                 throw new RegistroInsertException(st.ToString(), ex);
             }
@@ -115,7 +115,7 @@ namespace ControleOrcamentoAPI.DAO
         public async Task Deletar(long id)
         {
             if (id <= 0) throw new ArgumentException("Não informado o ID para deleção");
-            var entidadeLocalizada = await _dbContext.Bancos.FindAsync(id);
+            var entidadeLocalizada = await FiltrarPorID(id, true);
             if ((entidadeLocalizada == null) || (entidadeLocalizada.DataCancelamento.HasValue) || (entidadeLocalizada.UsuarioInclusao != Token.ID))
                 throw new RegistroNaoEncontradoException("Banco não localizado.");
             entidadeLocalizada.DataAlteracao = DateTime.UtcNow;
@@ -132,39 +132,18 @@ namespace ControleOrcamentoAPI.DAO
         /// <exception cref="ArgumentException"> Excação lançada quando o <paramref name="entidade"/> é nulo</exception>
         /// <exception cref="RegistroNaoEncontradoException"> Exception lançada quando não localizado o registro</exception>
         /// <returns>Lista dos registros encontrados no banco de dados pelo filtro infomado</returns>
-        public IList<Banco> ListarPorEntidade(Banco entidade)
+        public async Task<IList<Banco>> ListarPorEntidade(Banco entidade)
         {
-            if (entidade == null)
-                throw new ArgumentException("Entidade para filtro não informada");
-            query = from queryFiltro
-                      in _dbContext.Bancos.AsNoTracking()
-                    select queryFiltro;
-            query = AdicionarFiltrosComuns(entidade);
-
-            if (!string.IsNullOrWhiteSpace(entidade.Codigo))
-                query = from filtro in query where filtro.Codigo.Equals(entidade.Codigo, StringComparison.InvariantCultureIgnoreCase) select filtro;
-            if (!string.IsNullOrWhiteSpace(entidade.Nome))
-                query = from filtro in query where filtro.Nome.Equals(entidade.Nome, StringComparison.InvariantCultureIgnoreCase) select filtro;
-
-            var result = query.ExecutaFuncao(FuncAjustaTimeZone).OrderBy(p => p.Nome).ToArray();
-
-            if (result == null)
-                throw new RegistroNaoEncontradoException("Banco não localizado.");
-            return result;
-        }
-
-        /// <summary>
-        /// Responsavel por definir a função que deverá ser executada para ajustar dados de data e hora conforme Time Zone do usuário
-        /// </summary>
-        protected override void Configurar()
-        {
-            FuncAjustaTimeZone = data =>
+            var result = await FiltrarPorEntidade(entidade, new Action<Banco>(_entidade =>
             {
-                if (data.DataAlteracao.HasValue) data.DataAlteracao = data.DataAlteracao.Value.ToTimeZoneTime(Token.TimeZone);
-                if (data.DataCancelamento.HasValue) data.DataCancelamento = data.DataCancelamento.Value.ToTimeZoneTime(Token.TimeZone);
-                if (data.DataInclusao.HasValue) data.DataInclusao = data.DataInclusao.Value.ToTimeZoneTime(Token.TimeZone);
-                return data;
-            };
+                if (!string.IsNullOrWhiteSpace(_entidade.Codigo))
+                    query = from filtro in query where filtro.Codigo.Equals(_entidade.Codigo, StringComparison.InvariantCultureIgnoreCase) select filtro;
+                if (!string.IsNullOrWhiteSpace(_entidade.Nome))
+                    query = from filtro in query where filtro.Nome.Equals(_entidade.Nome, StringComparison.InvariantCultureIgnoreCase) select filtro;
+
+            }), false);
+            if ((result == null) || (result.Count < 1)) throw new RegistroNaoEncontradoException("Banco não localizado");
+            return result.OrderBy(p => p.Nome).ToArray();
         }
     }
 }

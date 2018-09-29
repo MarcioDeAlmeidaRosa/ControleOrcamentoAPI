@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using System.Collections.Generic;
 using ControleOrcamentoAPI.Models;
 
 namespace ControleOrcamentoAPI.DAO
@@ -44,6 +44,6 @@ namespace ControleOrcamentoAPI.DAO
         /// </summary>
         /// <param name="entidade"> Entidade do tipo <typeparamref name="T"/> contendo as informações que serão utilizadas para filtrar os dados</param>
         /// <returns>Objetos encontrado pelo filtro informado do tipo <typeparamref name="T"/></returns>
-        IList<T> ListarPorEntidade(T entidade);
+        Task<IList<T>> ListarPorEntidade(T entidade);
     }
 }

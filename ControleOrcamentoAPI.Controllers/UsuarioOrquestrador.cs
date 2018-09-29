@@ -73,11 +73,11 @@ namespace ControleOrcamentoAPI.Orquestrador
         /// <param name="entidade"> Entidade do tipo Usuário contendo as informações que serão utilizadas para filtrar os dados</param>
         /// <param name="token"> Usuário logado na aplicação</param>
         /// <returns>Objetos encontrado pelo filtro informado do tipo Usuário</returns>
-        public IList<Usuario> ListarPorEntidade(Usuario entidade, UsuarioAutenticado token)
+        public async Task<IList<Usuario>> ListarPorEntidade(Usuario entidade, UsuarioAutenticado token)
         {
             using (var dao = new UsuarioDAO(token))
             {
-                return dao.ListarPorEntidade(entidade);
+                return await dao.ListarPorEntidade(entidade);
             }
         }
     }

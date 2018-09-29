@@ -51,11 +51,11 @@ namespace ControleOrcamentoAPI.Controllers
         /// <param name="entidade">Dados de consulta de um Usuário</param>
         /// <returns>Listage de Usuário cadastrado na aplicação</returns>
         [Authorize(Roles = "ADMIN, USER")]
-        public HttpResponseMessage Get([FromUri]Usuario entidade)
+        public async Task<HttpResponseMessage> Get([FromUri]Usuario entidade)
         {
             try
             {
-                return Request.CreateResponse(HttpStatusCode.OK, _orquestrador.ListarPorEntidade(entidade, User));
+                return Request.CreateResponse(HttpStatusCode.OK, await _orquestrador.ListarPorEntidade(entidade, User));
             }
             catch (Exception ex)
             {

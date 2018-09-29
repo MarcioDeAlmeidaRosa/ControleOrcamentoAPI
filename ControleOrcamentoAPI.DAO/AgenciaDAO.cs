@@ -40,13 +40,13 @@ namespace ControleOrcamentoAPI.DAO
             if (entidade == null) throw new ArgumentException("Não informado a entidade para atualização");
             try
             {
-                var entidadeLocalizada = await _dbContext.Agencias.FindAsync(id);
+                var entidadeLocalizada = await FiltrarPorID(id, true);
                 if (entidadeLocalizada == null) throw new RegistroNaoEncontradoException("Agência não localizada.");
                 Mapper.Map(entidade, entidadeLocalizada);
                 entidadeLocalizada.DataAlteracao = DateTime.UtcNow;
                 entidadeLocalizada.UsuarioAlteracao = Token.ID;
                 await _dbContext.SaveChangesAsync();
-                return await BuscarPorID(entidadeLocalizada.ID);
+                return await FiltrarPorID(entidadeLocalizada.ID);
             }
             catch (DbUpdateException ex)
             {
@@ -54,7 +54,7 @@ namespace ControleOrcamentoAPI.DAO
             }
             catch (DbEntityValidationException ex)
             {
-                StringBuilder st = new StringBuilder();
+                var st = new StringBuilder();
                 ex.EntityValidationErrors.ToList().ForEach(errs => errs.ValidationErrors.ToList().ForEach(err => st.AppendLine(err.ErrorMessage)));
                 throw new RegistroUpdateException(st.ToString(), ex);
             }
@@ -70,7 +70,7 @@ namespace ControleOrcamentoAPI.DAO
         public async Task<Agencia> BuscarPorID(long id)
         {
             if (id <= 0) throw new ArgumentException("Não informado o ID para pesquisar");
-            var entidadeLocalizada = await _dbContext.Agencias.FindAsync(id);
+            var entidadeLocalizada = await FiltrarPorID(id);
             if (entidadeLocalizada == null) throw new RegistroNaoEncontradoException("Agência não localizada.");
             return entidadeLocalizada;
         }
@@ -91,7 +91,7 @@ namespace ControleOrcamentoAPI.DAO
                 entidade.UsuarioInclusao = Token.ID;
                 _dbContext.Agencias.Add(entidade);
                 await _dbContext.SaveChangesAsync();
-                return await BuscarPorID(entidade.ID);
+                return await FiltrarPorID(entidade.ID);
             }
             catch (DbUpdateException ex)
             {
@@ -99,7 +99,7 @@ namespace ControleOrcamentoAPI.DAO
             }
             catch (DbEntityValidationException ex)
             {
-                StringBuilder st = new StringBuilder();
+                var st = new StringBuilder();
                 ex.EntityValidationErrors.ToList().ForEach(errs => errs.ValidationErrors.ToList().ForEach(err => st.AppendLine(err.ErrorMessage)));
                 throw new RegistroInsertException(st.ToString(), ex);
             }
@@ -115,7 +115,7 @@ namespace ControleOrcamentoAPI.DAO
         public async Task Deletar(long id)
         {
             if (id <= 0) throw new ArgumentException("Não informado o ID para deleção");
-            var entidadeLocalizada = await _dbContext.Agencias.FindAsync(id);
+            var entidadeLocalizada = await FiltrarPorID(id, true);
             if ((entidadeLocalizada == null) || (entidadeLocalizada.DataCancelamento.HasValue) || (entidadeLocalizada.UsuarioInclusao != Token.ID))
                 throw new RegistroNaoEncontradoException("Agência não localizada.");
             entidadeLocalizada.DataAlteracao = DateTime.UtcNow;
@@ -132,38 +132,19 @@ namespace ControleOrcamentoAPI.DAO
         /// <exception cref="ArgumentException"> Excação lançada quando o <paramref name="entidade"/> é nulo</exception>
         /// <exception cref="RegistroNaoEncontradoException"> Exception lançada quando não localizado o registro</exception>
         /// <returns>Lista dos registros encontrados no banco de dados pelo filtro infomado</returns>
-        public IList<Agencia> ListarPorEntidade(Agencia entidade)
+        public async Task<IList<Agencia>> ListarPorEntidade(Agencia entidade)
         {
-            if (entidade == null)
-                throw new ArgumentException("Entidade para filtro não informada");
-            query = from queryFiltro
-                      in _dbContext.Agencias.AsNoTracking()
-                    select queryFiltro;
-            query = AdicionarFiltrosComuns(entidade);
-            if (!string.IsNullOrWhiteSpace(entidade.Numero))
-                query = from filtro in query where filtro.Numero.Equals(entidade.Numero, StringComparison.InvariantCultureIgnoreCase) select filtro;
-            if (!string.IsNullOrWhiteSpace(entidade.DV))
-                query = from filtro in query where filtro.DV.Equals(entidade.DV, StringComparison.InvariantCultureIgnoreCase) select filtro;
-            if (entidade.BancoID > 0)
-                query = from filtro in query where filtro.BancoID == entidade.BancoID select filtro;
-            var result = query.ExecutaFuncao(FuncAjustaTimeZone).OrderBy(p => p.Numero).ToArray();
-            if (result == null)
-                throw new RegistroNaoEncontradoException("Agência não localizada.");
-            return result;
-        }
-
-        /// <summary>
-        /// Responsavel por definir a função que deverá ser executada para ajustar dados de data e hora conforme Time Zone do usuário
-        /// </summary>
-        protected override void Configurar()
-        {
-            FuncAjustaTimeZone = data =>
+            var result = await FiltrarPorEntidade(entidade, new Action<Agencia>(_entidade =>
             {
-                if (data.DataAlteracao.HasValue) data.DataAlteracao = data.DataAlteracao.Value.ToTimeZoneTime(Token.TimeZone);
-                if (data.DataCancelamento.HasValue) data.DataCancelamento = data.DataCancelamento.Value.ToTimeZoneTime(Token.TimeZone);
-                if (data.DataInclusao.HasValue) data.DataInclusao = data.DataInclusao.Value.ToTimeZoneTime(Token.TimeZone);
-                return data;
-            };
+                if (!string.IsNullOrWhiteSpace(_entidade.Numero))
+                    query = from filtro in query where filtro.Numero.Equals(_entidade.Numero, StringComparison.InvariantCultureIgnoreCase) select filtro;
+                if (!string.IsNullOrWhiteSpace(_entidade.DV))
+                    query = from filtro in query where filtro.DV.Equals(_entidade.DV, StringComparison.InvariantCultureIgnoreCase) select filtro;
+                if (_entidade.BancoID > 0)
+                    query = from filtro in query where filtro.BancoID == _entidade.BancoID select filtro;
+            }), false);
+            if ((result == null) || (result.Count < 1)) throw new RegistroNaoEncontradoException("Agência não localizada.");
+            return result.OrderBy(p => p.Numero).ToArray();
         }
     }
 }

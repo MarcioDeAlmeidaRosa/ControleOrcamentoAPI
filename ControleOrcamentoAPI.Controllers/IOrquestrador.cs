@@ -49,6 +49,6 @@ namespace ControleOrcamentoAPI.Orquestrador
         /// <param name="entidade"> Entidade do tipo <typeparamref name="T"/> contendo as informações que serão utilizadas para filtrar os dados</param>
         /// <param name="token"> Usuário logado na aplicação</param>
         /// <returns>Objetos encontrado pelo filtro informado do tipo <typeparamref name="T"/></returns>
-        IList<T> ListarPorEntidade(T entidade, UsuarioAutenticado token);
+        Task<IList<T>> ListarPorEntidade(T entidade, UsuarioAutenticado token);
     }
 }

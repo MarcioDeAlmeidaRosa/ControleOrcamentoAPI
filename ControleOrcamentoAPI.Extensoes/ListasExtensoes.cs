@@ -25,13 +25,25 @@ namespace ControleOrcamentoAPI.Extensoes
         }
 
         /// <summary>
-        /// 
+        /// Extensão para executar funçào passada ao objeto 
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="lista"></param>
-        /// <param name="funcao"></param>
+        /// <typeparam name="T">Objeto à receber a açào da funçào</typeparam>
+        /// <param name="obj">Objeto à receber a açào da funçào</param>
+        /// <param name="funcao">Funçào para executar na entidade passada</param>
         /// <returns></returns>
-        public static IEnumerable<T> ExecutaFuncao<T>(this IEnumerable<T> lista, Func<T, T> funcao)
+        public static T ExecutaFuncao<T>(this T obj, Func<T, T> funcao)
+        {
+            return funcao(obj);
+        }
+
+        /// <summary>
+        /// Extensão para executar funçào passada ao objeto para cada item da lista
+        /// </summary>
+        /// <typeparam name="T">Objeto à receber a açào da funçào</typeparam>
+        /// <param name="lista">Lista que será percorrida para aplicar a funçào à cada registro</param>
+        /// <param name="funcao">Funçào para executar à cada entidade passada na lista</param>
+        /// <returns></returns>
+        public static IList<T> ExecutaFuncao<T>(this IEnumerable<T> lista, Func<T, T> funcao)
         {
             var retorno = new List<T>();
             lista.ToList().ForEach(item => retorno.Add(funcao(item)));
